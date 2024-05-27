@@ -1,7 +1,7 @@
 #ifndef __API_Projet_Info__
 #define __API_Projet_Info__
 #include "snakeAPI.h"
-
+//Test git 
 typedef struct _Coordonnee_struct
 	{
 	    int x;
