@@ -6,7 +6,7 @@ void verification_cellule (Cellule ***arene, int Longueur_Arene_f, int Hauteur_A
 void arene_muraille (Cellule **arene_m, int *Muraille_m, int Stock_Muraille_m);
 //void arene_muraille (Cellule ***arene_m,int ** Muraille_m, int Stock_Muraille_m);
 void verification_muraille (int * Muraille_v, int Stock_Muraille_v);
-void avance_ligne_droite (int direction, int distance, int* taille_serpent_d, int* tour_d, t_return_code* adversaire_d, t_return_code* moi_d,t_move* move_adv_d);
+void avance_ligne_droite (int direction, int distance, int* taille_serpent_d, int* tour_d, t_return_code* adversaire_d, t_return_code* moi_d, t_move* move_adv_d, Cellule **arene, int Longueur_Arene, int Hauteur_Arene, Serpant* serpent_moi, Serpant** Tete_Queu_moi, Serpant* serpent_adv, Serpant** Tete_Queu_adv);
 void affichage_arene (Cellule **arene_a, int Longueur_Arene_a, int Hauteur_Arene_a);
 void maj_arene_serpant_position (Cellule **arene_p, int Longueur_Arene_p, int Hauteur_Arene_p, int direction_p, int* tour_p, Serpant* Serpant_p,Serpant **Tete_Queu_p);
 
@@ -134,10 +134,7 @@ int main (void)
 			{
 			for ( int i = 0; i<2; i++)
 				{
-				avance_ligne_droite(tour_manuel_cylage_petit, 1, &taille_serpent, &tour, &adversaire, &moi, &move_adv);
-				maj_arene_serpant_position (arene, Longueur_Arene, Hauteur_Arene, tour_manuel_cylage_petit, &tour, Serpant_Moi, Tete_Queu_Moi);
-				maj_arene_serpant_position (arene, Longueur_Arene, Hauteur_Arene, move_adv, &tour, Serpant_Adv, Tete_Queu_Adv);
-				affichage_arene (arene, Longueur_Arene, Hauteur_Arene);
+				avance_ligne_droite(tour_manuel_cylage_petit, 1, &taille_serpent, &tour, &adversaire, &moi, &move_adv,arene, Longueur_Arene, Hauteur_Arene,Serpant_Moi, Tete_Queu_Moi, Serpant_Adv, Tete_Queu_Adv); //All in one : Affiche l arene + Met a jour l arene et les serpants + deplace le serpant
 				void printArena();
 				printf ("Cycle %d - %d - %d\n",iii, ii, i);
 				}
@@ -146,16 +143,18 @@ int main (void)
 			}
 		}
 
-	avance_ligne_droite(2, (2), &taille_serpent, &tour, &adversaire, &moi, &move_adv);
-	avance_ligne_droite(1, (3), &taille_serpent, &tour, &adversaire, &moi, &move_adv);
-	avance_ligne_droite(0, (Hauteur_Arene/2)+1, &taille_serpent, &tour, &adversaire, &moi, &move_adv);
+	avance_ligne_droite(2, (2), &taille_serpent, &tour, &adversaire, &moi, &move_adv,arene, Longueur_Arene, Hauteur_Arene,Serpant_Moi, Tete_Queu_Moi, Serpant_Adv, Tete_Queu_Adv);
+	avance_ligne_droite(1, (3), &taille_serpent, &tour, &adversaire, &moi, &move_adv,arene, Longueur_Arene, Hauteur_Arene,Serpant_Moi, Tete_Queu_Moi, Serpant_Adv, Tete_Queu_Adv);
+	avance_ligne_droite(0, (Hauteur_Arene/2)+1, &taille_serpent, &tour, &adversaire, &moi, &move_adv,arene, Longueur_Arene, Hauteur_Arene,Serpant_Moi, Tete_Queu_Moi, Serpant_Adv, Tete_Queu_Adv);
+
+
 	
 while (1) 
 	{
-	avance_ligne_droite(3, (Longueur_Arene- 1), &taille_serpent, &tour, &adversaire, &moi, &move_adv);
-	avance_ligne_droite(2, (Hauteur_Arene - 1), &taille_serpent, &tour, &adversaire, &moi, &move_adv);
-	avance_ligne_droite(1, (Longueur_Arene- 1), &taille_serpent, &tour, &adversaire, &moi, &move_adv);
-	avance_ligne_droite(0, (Hauteur_Arene - 1), &taille_serpent, &tour, &adversaire, &moi, &move_adv);
+	avance_ligne_droite(3, (Longueur_Arene- 1), &taille_serpent, &tour, &adversaire, &moi, &move_adv,arene, Longueur_Arene, Hauteur_Arene,Serpant_Moi, Tete_Queu_Moi, Serpant_Adv, Tete_Queu_Adv);
+	avance_ligne_droite(2, (Hauteur_Arene - 1), &taille_serpent, &tour, &adversaire, &moi, &move_adv,arene, Longueur_Arene, Hauteur_Arene,Serpant_Moi, Tete_Queu_Moi, Serpant_Adv, Tete_Queu_Adv);
+	avance_ligne_droite(1, (Longueur_Arene- 1), &taille_serpent, &tour, &adversaire, &moi, &move_adv,arene, Longueur_Arene, Hauteur_Arene,Serpant_Moi, Tete_Queu_Moi, Serpant_Adv, Tete_Queu_Adv);
+	avance_ligne_droite(0, (Hauteur_Arene - 1), &taille_serpent, &tour, &adversaire, &moi, &move_adv,arene, Longueur_Arene, Hauteur_Arene,Serpant_Moi, Tete_Queu_Moi, Serpant_Adv, Tete_Queu_Adv);
 	}
 	closeConnection();
 

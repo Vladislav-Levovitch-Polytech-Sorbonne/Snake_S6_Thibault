@@ -134,13 +134,18 @@ void arene_muraille(Cellule **arene_m, int *Muraille_m, int Stock_Muraille_m)
     }
 
 	
-void avance_ligne_droite (int direction, int distance, int* taille_serpent_d, int* tour_d, t_return_code* adversaire_d, t_return_code* moi_d, t_move* move_adv_d)
+//void avance_ligne_droite (int direction, int distance, int* taille_serpent_d, int* tour_d, t_return_code* adversaire_d, t_return_code* moi_d, t_move* move_adv_d)//Version sans la mise a jour
+void avance_ligne_droite (int direction, int distance, int* taille_serpent_d, int* tour_d, t_return_code* adversaire_d, t_return_code* moi_d, t_move* move_adv_d, Cellule **arene, int Longueur_Arene, int Hauteur_Arene, Serpant* serpent_moi, Serpant** Tete_Queu_moi, Serpant* serpent_adv, Serpant** Tete_Queu_adv)
 	{
     for (int v = 0; v < distance; v++)   //PASS
     	{
-        *adversaire_d = getMove(move_adv_d); // Correction ici
+        *adversaire_d = getMove(move_adv_d);
         *moi_d = sendMove(direction);  
-        printArena(); 
+        printArena();
+	maj_arene_serpant_position(arene, Longueur_Arene, Hauteur_Arene, direction, tour_d, serpent_moi, Tete_Queu_moi);
+        maj_arene_serpant_position(arene, Longueur_Arene, Hauteur_Arene, *move_adv_d, tour_d, serpent_adv, Tete_Queu_adv);
+	affichage_arene (arene, Longueur_Arene, Hauteur_Arene);
+        
         if (((*tour_d) % 10) == 0)
         	{
 			(*taille_serpent_d)++;
@@ -266,7 +271,6 @@ void maj_arene_serpant_position (Cellule **arene_p, int Longueur_Arene_p, int Ha
     //Maj des coordonnes
     int x_new = 0;
     int y_new = 0;
-    
     if (direction_p == 0) // Haut
         {
         x_new = ((*Tete_Queu_p[0]).Coordonnee_Portion_Serpant.x);
@@ -283,7 +287,7 @@ void maj_arene_serpant_position (Cellule **arene_p, int Longueur_Arene_p, int Ha
         {
         x_new = ((*Tete_Queu_p[0]).Coordonnee_Portion_Serpant.x)-1;
         y_new = ((*Tete_Queu_p[0]).Coordonnee_Portion_Serpant.y);
-        }
+	}
     
     else if (direction_p == 1) // Droite
         {
@@ -295,8 +299,8 @@ void maj_arene_serpant_position (Cellule **arene_p, int Longueur_Arene_p, int Ha
 	{printf("Out of rang mais bon ... les coups interdits sont interdits : )");}
     
     //Maj serpant et arene
-    if (((*tour_p-1)%10)==0) //Decalage du a l incrementation de tour avant la maj de serpant 
-        {
+    //if (((*tour_p-1)%10)==0) //Decalage du a l incrementation de tour avant la maj de serpant 
+    //    {
         //Partie creation nouvelle_tete_serpant
         Serpant * Nouvelle_tete_Serpant = (Serpant *) malloc (1*sizeof(Serpant));
         (* Nouvelle_tete_Serpant).Remonter_vers_serpant_tete = Tete_Queu_p[1];
@@ -309,8 +313,8 @@ void maj_arene_serpant_position (Cellule **arene_p, int Longueur_Arene_p, int Ha
         
         //Partie Mise a jour arene
         arene_p[y_new][x_new].Occupation = 1;
-        }
-    else 
+    //    }
+    /*else 
         {
         //Partie Mise a jour de la sauvegarde tete_queu
                 //Remonter_vers_serpant_tete = Tete_Queu_p[1]; //Au cas ou mais normalement deja le cas
@@ -323,7 +327,7 @@ void maj_arene_serpant_position (Cellule **arene_p, int Longueur_Arene_p, int Ha
         
         //Partie Mise a jour arene
         arene_p[y_new][x_new].Occupation = 1;
-        }
+        }*/
     }
 #endif
 
