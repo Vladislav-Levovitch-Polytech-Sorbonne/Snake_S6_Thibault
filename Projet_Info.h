@@ -135,17 +135,17 @@ void arene_muraille(Cellule **arene_m, int *Muraille_m, int Stock_Muraille_m)
 
 	
 //void avance_ligne_droite (int direction, int distance, int* taille_serpent_d, int* tour_d, t_return_code* adversaire_d, t_return_code* moi_d, t_move* move_adv_d)//Version sans la mise a jour
-void avance_ligne_droite (int direction, int distance, int* taille_serpent_d, int* tour_d, t_return_code* adversaire_d, t_return_code* moi_d, t_move* move_adv_d, Cellule **arene, int Longueur_Arene, int Hauteur_Arene, Serpant* serpent_moi, Serpant** Tete_Queu_moi, Serpant* serpent_adv, Serpant** Tete_Queu_adv)
+void avance_ligne_droite (int direction_d, int distance_d, int* taille_serpent_d, int* tour_d, t_return_code* adversaire_d, t_return_code* moi_d, t_move* move_adv_d, Cellule **arene_d, int Longueur_Arene_d, int Hauteur_Arene_d, Serpant* serpent_moi_d, Serpant** Tete_Queu_moi_d, Serpant* serpent_adv_d, Serpant** Tete_Queu_adv_d)
 	{
-    for (int v = 0; v < distance; v++)   //PASS
+    for (int v = 0; v < distance_d; v++)   //PASS
     	{
         *adversaire_d = getMove(move_adv_d);
-        *moi_d = sendMove(direction);  
-        printArena();
-	maj_arene_serpant_position(arene, Longueur_Arene, Hauteur_Arene, direction, tour_d, serpent_moi, Tete_Queu_moi);
-        maj_arene_serpant_position(arene, Longueur_Arene, Hauteur_Arene, *move_adv_d, tour_d, serpent_adv, Tete_Queu_adv);
-	affichage_arene (arene, Longueur_Arene, Hauteur_Arene);
-        
+        *moi_d = sendMove(direction_d);
+	maj_arene_serpant_position(arene_d, Longueur_Arene_d, Hauteur_Arene_d, direction_d, tour_d, serpent_moi_d, Tete_Queu_moi_d);
+        maj_arene_serpant_position(arene_d, Longueur_Arene_d, Hauteur_Arene_d, *move_adv_d, tour_d, serpent_adv_d, Tete_Queu_adv_d);
+	affichage_arene (arene_d, Longueur_Arene_d, Hauteur_Arene_d);
+        //printArena();
+
         if (((*tour_d) % 10) == 0)
         	{
 			(*taille_serpent_d)++;
@@ -269,76 +269,77 @@ void affichage_arene (Cellule **arene_a, int Longueur_Arene_a, int Hauteur_Arene
 void maj_arene_serpant_position (Cellule **arene_p, int Longueur_Arene_p, int Hauteur_Arene_p, int direction_p, int* tour_p, Serpant* Serpant_p,Serpant **Tete_Queu_p) //On pourrat ajouter le serpant de qui est ce pour ensuite faire la maj pour les couleurs et triangle.
     {
     //Maj des coordonnes
-    int x_new = 0;
-    int y_new = 0;
+    int x_new = ((*Tete_Queu_p[0]).Coordonnee_Portion_Serpant.x);
+    int y_new = ((*Tete_Queu_p[0]).Coordonnee_Portion_Serpant.y);
     if (direction_p == 0) // Haut
         {
-        x_new = ((*Tete_Queu_p[0]).Coordonnee_Portion_Serpant.x);
-        y_new = ((*Tete_Queu_p[0]).Coordonnee_Portion_Serpant.y)-1;
+        y_new -= 1;
         }
         
     else if (direction_p == 2) // Bas
         {
-        x_new = ((*Tete_Queu_p[0]).Coordonnee_Portion_Serpant.x);
-        y_new = ((*Tete_Queu_p[0]).Coordonnee_Portion_Serpant.y)+1;
+        y_new += 1;
         }
     
     else if (direction_p == 3) // Gauche
         {
-        x_new = ((*Tete_Queu_p[0]).Coordonnee_Portion_Serpant.x)-1;
-        y_new = ((*Tete_Queu_p[0]).Coordonnee_Portion_Serpant.y);
+        x_new -= 1;
 	}
     
     else if (direction_p == 1) // Droite
         {
-        x_new = ((*Tete_Queu_p[0]).Coordonnee_Portion_Serpant.x)+1;
-        y_new = ((*Tete_Queu_p[0]).Coordonnee_Portion_Serpant.y);
-        }
+        x_new += 1;
+	}
     
     if (x_new<0 || y_new<0 || x_new>=Longueur_Arene_p || y_new>=Hauteur_Arene_p ) 
-	{printf("Out of rang mais bon ... les coups interdits sont interdits : )");}
+	{
+	printf("Out of rang mais bon ... les coups interdits sont interdits : )\n");
+	return; //Par securite
+	}
     
     //Maj serpant et arene
-    //if (((*tour_p-1)%10)==0) //Decalage du a l incrementation de tour avant la maj de serpant 
-    //    {
+    if (((*tour_p-1)%10)==0) //Decalage du a l incrementation de tour avant la maj de serpant 
+        {
         //Partie creation nouvelle_tete_serpant
         Serpant * Nouvelle_tete_Serpant = (Serpant *) malloc (1*sizeof(Serpant));
         (* Nouvelle_tete_Serpant).Remonter_vers_serpant_tete = Tete_Queu_p[1];
         (* Nouvelle_tete_Serpant).Redescendre_vers_serpant_queu = Tete_Queu_p[0];
         (* Nouvelle_tete_Serpant).Coordonnee_Portion_Serpant.x = x_new;
         (* Nouvelle_tete_Serpant).Coordonnee_Portion_Serpant.y = y_new;
-        
+
+	//Partie insertion de la nouvelle tete
+	(*Tete_Queu_p[0]).Remonter_vers_serpant_tete = Nouvelle_tete_Serpant;		//Ancienne tete relie la nouvelle
+	(*Tete_Queu_p[1]).Redescendre_vers_serpant_queu = Nouvelle_tete_Serpant;	//La queu change son raccordement
+
         //Partie Mise a jour de la sauvegarde tete_queu
-        *Tete_Queu_p[0] = * Nouvelle_tete_Serpant;
+        Tete_Queu_p[0] = Nouvelle_tete_Serpant;
         
         //Partie Mise a jour arene
         arene_p[y_new][x_new].Occupation = 1;
-    //    }
-    /*else 
+        }
+
+    else 
         {
         //Partie Mise a jour de la sauvegarde tete_queu
-                //Remonter_vers_serpant_tete = Tete_Queu_p[1]; //Au cas ou mais normalement deja le cas
         arene_p[(*(Tete_Queu_p[1])).Coordonnee_Portion_Serpant.y][(*(Tete_Queu_p[1])).Coordonnee_Portion_Serpant.x].Occupation = 0; //Liberation de la case
-        (*(Tete_Queu_p[1])).Coordonnee_Portion_Serpant.y=y_new;
-        (*(Tete_Queu_p[1])).Coordonnee_Portion_Serpant.x=x_new;
+        (*(Tete_Queu_p[1])).Coordonnee_Portion_Serpant.y = y_new;
+        (*(Tete_Queu_p[1])).Coordonnee_Portion_Serpant.x = x_new;
         
-        *Tete_Queu_p[1] = *((*(Tete_Queu_p[1])).Remonter_vers_serpant_tete);
-        *Tete_Queu_p[0] = *((*(Tete_Queu_p[1])).Redescendre_vers_serpant_queu);
+        Tete_Queu_p[0] = (*(Tete_Queu_p[0])).Remonter_vers_serpant_tete;
+        Tete_Queu_p[1] = (*(Tete_Queu_p[1])).Remonter_vers_serpant_tete;
         
         //Partie Mise a jour arene
         arene_p[y_new][x_new].Occupation = 1;
-        }*/
+        }
     }
 #endif
 
 
 /*
 
-Les Papas des Elec Benoit fabre Anik alexandre IFitep Michel rodon 
+Les Papas des Elec Thibault HILAIRE Yann DOUZE Benoit FABRE Annick ALEXANDRE IFitep Michel REDON 
 Ei Eise Eili Eist 
 Les ST etait premier avec EI 
 Ifitep avant Polytech
-
-
  
 */

@@ -6,7 +6,7 @@ void verification_cellule (Cellule ***arene, int Longueur_Arene_f, int Hauteur_A
 void arene_muraille (Cellule **arene_m, int *Muraille_m, int Stock_Muraille_m);
 //void arene_muraille (Cellule ***arene_m,int ** Muraille_m, int Stock_Muraille_m);
 void verification_muraille (int * Muraille_v, int Stock_Muraille_v);
-void avance_ligne_droite (int direction, int distance, int* taille_serpent_d, int* tour_d, t_return_code* adversaire_d, t_return_code* moi_d, t_move* move_adv_d, Cellule **arene, int Longueur_Arene, int Hauteur_Arene, Serpant* serpent_moi, Serpant** Tete_Queu_moi, Serpant* serpent_adv, Serpant** Tete_Queu_adv);
+void avance_ligne_droite (int direction_d, int distance_d, int* taille_serpent_d, int* tour_d, t_return_code* adversaire_d, t_return_code* moi_d, t_move* move_adv_d, Cellule **arene_d, int Longueur_Arene_d, int Hauteur_Arene_d, Serpant* serpent_moi_d, Serpant** Tete_Queu_moi_d, Serpant* serpent_adv_d, Serpant** Tete_Queu_adv_d);
 void affichage_arene (Cellule **arene_a, int Longueur_Arene_a, int Hauteur_Arene_a);
 void maj_arene_serpant_position (Cellule **arene_p, int Longueur_Arene_p, int Hauteur_Arene_p, int direction_p, int* tour_p, Serpant* Serpant_p,Serpant **Tete_Queu_p);
 
@@ -72,8 +72,8 @@ int main (void)
         Tete_Queu_Adv[0] = (Serpant *) malloc (1*sizeof(Serpant));
         Tete_Queu_Adv[1] = (Serpant *) malloc (1*sizeof(Serpant));
         
-        *((Tete_Queu_Moi)[0]) = *Serpant_Moi; *((Tete_Queu_Moi)[1]) = *Serpant_Moi;
-        *((Tete_Queu_Adv)[0]) = *Serpant_Adv; *((Tete_Queu_Adv)[1]) = *Serpant_Adv;
+        Tete_Queu_Moi[0] = Serpant_Moi; Tete_Queu_Moi[1] = Serpant_Moi;
+        Tete_Queu_Adv[0] = Serpant_Adv; Tete_Queu_Adv[1] = Serpant_Adv;
         
         printf ("y = %d\n", (*Tete_Queu_Adv[1]).Coordonnee_Portion_Serpant.y);
         printf ("x = %d\n", (*((*Tete_Queu_Moi[1]).Remonter_vers_serpant_tete)).Coordonnee_Portion_Serpant.x);
@@ -106,27 +106,29 @@ int main (void)
 	it ++;
 	printf ("Mon serpent est de taille : %d\n", taille_serpent );
 	printf (" + - + tours numéro : %d + - + \n", tour); tour++;
-	
+
 	//1er Coup manuel pour tester et apprehender la gestion du jeu
 	adversaire = getMove( &move_adv );
 	moi = sendMove(0);
-	maj_arene_serpant_position (arene, Longueur_Arene, Hauteur_Arene, 0       , &tour, Serpant_Moi, Tete_Queu_Moi);
+	maj_arene_serpant_position (arene, Longueur_Arene, Hauteur_Arene, 0, &tour, Serpant_Moi, Tete_Queu_Moi);
 	maj_arene_serpant_position (arene, Longueur_Arene, Hauteur_Arene, move_adv, &tour, Serpant_Adv, Tete_Queu_Adv);
 	affichage_arene (arene, Longueur_Arene, Hauteur_Arene);
 	printArena();
 	printf (" + - + tours numéro : %d + - + \n", tour); tour++;
 	printf ("coup_moi : %d\t coup_adverse : %d\t mon serpent est de taille : %d\n",moi, adversaire, taille_serpent );
 	
+	//avance_ligne_droite(2, (1), &taille_serpent, &tour, &adversaire, &moi, &move_adv,arene, Longueur_Arene, Hauteur_Arene,Serpant_Moi, Tete_Queu_Moi, Serpant_Adv, Tete_Queu_Adv); //printArena(); //Test unitaire de deplacement
+
 	//2eme Coup manuel pour tester et apprehender la gestion du jeu
 	adversaire = getMove( &move_adv );
 	moi = sendMove(3);
-	maj_arene_serpant_position (arene, Longueur_Arene, Hauteur_Arene, 3       , &tour, Serpant_Moi, Tete_Queu_Moi);
+	maj_arene_serpant_position (arene, Longueur_Arene, Hauteur_Arene, 3, &tour, Serpant_Moi, Tete_Queu_Moi);
 	maj_arene_serpant_position (arene, Longueur_Arene, Hauteur_Arene, move_adv, &tour, Serpant_Adv, Tete_Queu_Adv);
 	affichage_arene (arene, Longueur_Arene, Hauteur_Arene);
 	printArena();
 	printf ("coup_moi : %d\t coup_adverse : %d\t mon serpent est de taille : %d\n",moi, adversaire, taille_serpent );
 	printf (" + - + tours numéro : %d + - + \n", tour);tour++;
-	
+
 	int tour_manuel_cylage_petit = 2;
 	for ( int iii = 0; iii<6; iii++)
 		{
@@ -135,7 +137,7 @@ int main (void)
 			for ( int i = 0; i<2; i++)
 				{
 				avance_ligne_droite(tour_manuel_cylage_petit, 1, &taille_serpent, &tour, &adversaire, &moi, &move_adv,arene, Longueur_Arene, Hauteur_Arene,Serpant_Moi, Tete_Queu_Moi, Serpant_Adv, Tete_Queu_Adv); //All in one : Affiche l arene + Met a jour l arene et les serpants + deplace le serpant
-				void printArena();
+				printArena();
 				printf ("Cycle %d - %d - %d\n",iii, ii, i);
 				}
 			tour_manuel_cylage_petit--;
