@@ -47,11 +47,11 @@ int main (void)
 	it ++;
 	
 	connectToServer("localhost", 1234,"Vlad");
-	waitForSnakeGame(	"TRAINING SUPER_PLAYER difficulty=3 timeout=10 seed=2002 start=1",
+	waitForSnakeGame(	"TRAINING SUPER_PLAYER difficulty=2 timeout=10 seed=2002 start=1",
 	 			&gameName, &Longueur_Arene, &Hauteur_Arene, &Stock_Muraille);
 
 	//Creation Serpant
-	Serpant * Serpant_Moi = (Serpant *) malloc (1*sizeof(Serpant));
+		Serpant * Serpant_Moi = (Serpant *) malloc (1*sizeof(Serpant));
         Serpant * Serpant_Adv = (Serpant *) malloc (1*sizeof(Serpant));
         
         (*Serpant_Moi).Coordonnee_Portion_Serpant.x = Longueur_Arene-3;
@@ -137,7 +137,7 @@ int main (void)
 			for ( int i = 0; i<2; i++)
 				{
 				avance_ligne_droite(tour_manuel_cylage_petit, 1, &taille_serpent, &tour, &adversaire, &moi, &move_adv,arene, Longueur_Arene, Hauteur_Arene,Serpant_Moi, Tete_Queu_Moi, Serpant_Adv, Tete_Queu_Adv); //All in one : Affiche l arene + Met a jour l arene et les serpants + deplace le serpant
-				printArena();
+				//printArena();
 				printf ("Cycle %d - %d - %d\n",iii, ii, i);
 				}
 			tour_manuel_cylage_petit--;

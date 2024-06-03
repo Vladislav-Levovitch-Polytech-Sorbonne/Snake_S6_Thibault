@@ -19,12 +19,12 @@ typedef struct _Serpant_struct //Serpant doublement chainee
 
 typedef struct _Cellule_struct
 	{
-	    	int N;
+	    int N;
 		int S;
 		int E;
 		int W;
 		
-	    	int Occupation;
+	    int Occupation;
 	} Cellule;
 
 
@@ -65,8 +65,8 @@ void arene_preparation (Cellule*** arene_p, int Longueur_Arene_p, int Hauteur_Ar
 		
 	//Rajout des occupations initiales
 	
-	(*arene_p)[Hauteur_Arene_p/2][2].Occupation=1;
-	(*arene_p)[Hauteur_Arene_p/2][Longueur_Arene_p-3].Occupation=1;	
+	(*arene_p)[Hauteur_Arene_p/2][2].Occupation = 10; //Serpant de Gauche Base 10
+	(*arene_p)[Hauteur_Arene_p/2][Longueur_Arene_p-3].Occupation = 20; //Serpant de Droite base 20
 	}
 	
 void verification_cellule (Cellule ***arene_v, int Longueur_Arene_p, int Hauteur_Arene_p) 
@@ -141,9 +141,9 @@ void avance_ligne_droite (int direction_d, int distance_d, int* taille_serpent_d
     	{
         *adversaire_d = getMove(move_adv_d);
         *moi_d = sendMove(direction_d);
-	maj_arene_serpant_position(arene_d, Longueur_Arene_d, Hauteur_Arene_d, direction_d, tour_d, serpent_moi_d, Tete_Queu_moi_d);
+	    maj_arene_serpant_position(arene_d, Longueur_Arene_d, Hauteur_Arene_d, direction_d, tour_d, serpent_moi_d, Tete_Queu_moi_d);
         maj_arene_serpant_position(arene_d, Longueur_Arene_d, Hauteur_Arene_d, *move_adv_d, tour_d, serpent_adv_d, Tete_Queu_adv_d);
-	affichage_arene (arene_d, Longueur_Arene_d, Hauteur_Arene_d);
+	    affichage_arene (arene_d, Longueur_Arene_d, Hauteur_Arene_d);
         //printArena();
 
         if (((*tour_d) % 10) == 0)
@@ -221,20 +221,48 @@ void affichage_arene (Cellule **arene_a, int Longueur_Arene_a, int Hauteur_Arene
 		//Affichage ligne mur horizontaux
         for (int l = 0; l < Longueur_Arene_a-1; l++) 
             {
-            if (arene_a[h][l].Occupation == 1 && arene_a[h][l].W == 0)
-                {printf(" ■ ");}
-            //else if (h==0 && l==0){printf("test");}
-            else if (arene_a[h][l].Occupation == 1 && arene_a[h][l].W == 1)
-                {printf("┃\x1b[36m■\x1b[0m ");}
-                //{printf("┃■ ");}
+            if (arene_a[h][l].Occupation >= 1 && (arene_a[h][l].W == 0||arene_a[h][l].W == 1) )
+                {// Echantillons ◀ ▶ ▲ ▼ ■
+                if (arene_a[h][l].Occupation<20 && arene_a[h][l].Occupation>=10) //Ouverture de la couleur GAUCHE = ROUGE, DROITE = BLEU
+                    {printf("\x1b[31m");}
+                else 
+                    {printf("\x1b[36m");}
+                
+                if (arene_a[h][l].W == 0){printf(" ");}
+                else if (arene_a[h][l].W == 1){printf("┃");}
+
+                if      ((((arene_a[h][l].Occupation)-1)%10)==0) {printf("▲");} //Dehachage_dechiffrement de l occupation
+                else if ((((arene_a[h][l].Occupation)-1)%10)==1) {printf("▶");}
+                else if ((((arene_a[h][l].Occupation)-1)%10)==2) {printf("▼");}
+                else if ((((arene_a[h][l].Occupation)-1)%10)==3) {printf("◀");}
+                else 
+                    {printf("■");}
+
+                printf("\x1b[0m ");//Reset de la couleur
+                }
+
             else if (arene_a[h][l].Occupation == 0 && arene_a[h][l].W == 1)
                 {printf("┃. ");}
             else 
                 {printf(" . ");}
             }
         //Affichage derniere colonne    
-        if (arene_a[h][Longueur_Arene_a-1].Occupation == 1)
-                    {printf("\x1b[36m ■┃\x1b[0m");}
+        if (arene_a[h][Longueur_Arene_a-1].Occupation >= 1)
+            {// Echantillons ◀ ▶ ▲ ▼ ■
+            if (arene_a[h][Longueur_Arene_a-1].Occupation<20 && arene_a[h][Longueur_Arene_a-1].Occupation>=10) //Ouverture de la couleur GAUCHE = ROUGE, DROITE = BLEU
+                {printf("\x1b[31m ");}
+            else 
+                {printf("\x1b[36m ");}
+
+            if      ((((arene_a[h][Longueur_Arene_a-1].Occupation)-1)%10)==0) {printf("▲");} //Dehachage_dechiffrement de l occupation
+            else if ((((arene_a[h][Longueur_Arene_a-1].Occupation)-1)%10)==1) {printf("▶");}
+            else if ((((arene_a[h][Longueur_Arene_a-1].Occupation)-1)%10)==2) {printf("▼");}
+            else if ((((arene_a[h][Longueur_Arene_a-1].Occupation)-1)%10)==3) {printf("◀");}
+            else 
+                {printf("■");}
+                
+            printf("\x1b[0m┃");//Reset de la couleur
+            }
         else 
         	{printf("\x1b[36m .┃\x1b[0m");}  
         }
@@ -271,6 +299,11 @@ void maj_arene_serpant_position (Cellule **arene_p, int Longueur_Arene_p, int Ha
     //Maj des coordonnes
     int x_new = ((*Tete_Queu_p[0]).Coordonnee_Portion_Serpant.x);
     int y_new = ((*Tete_Queu_p[0]).Coordonnee_Portion_Serpant.y);
+
+    int y_old = y_new;
+    int x_old = x_new;
+    arene_p [y_old][x_old].Occupation -= (arene_p [y_old][x_old].Occupation)%10;
+
     if (direction_p == 0) // Haut
         {
         y_new -= 1;
@@ -307,15 +340,15 @@ void maj_arene_serpant_position (Cellule **arene_p, int Longueur_Arene_p, int Ha
         (* Nouvelle_tete_Serpant).Coordonnee_Portion_Serpant.x = x_new;
         (* Nouvelle_tete_Serpant).Coordonnee_Portion_Serpant.y = y_new;
 
-	//Partie insertion de la nouvelle tete
-	(*Tete_Queu_p[0]).Remonter_vers_serpant_tete = Nouvelle_tete_Serpant;		//Ancienne tete relie la nouvelle
-	(*Tete_Queu_p[1]).Redescendre_vers_serpant_queu = Nouvelle_tete_Serpant;	//La queu change son raccordement
+        //Partie insertion de la nouvelle tete
+        (*Tete_Queu_p[0]).Remonter_vers_serpant_tete = Nouvelle_tete_Serpant;		//Ancienne tete relie la nouvelle
+        (*Tete_Queu_p[1]).Redescendre_vers_serpant_queu = Nouvelle_tete_Serpant;	//La queu change son raccordement
 
         //Partie Mise a jour de la sauvegarde tete_queu
         Tete_Queu_p[0] = Nouvelle_tete_Serpant;
         
         //Partie Mise a jour arene
-        arene_p[y_new][x_new].Occupation = 1;
+        arene_p[y_new][x_new].Occupation = arene_p [y_old][x_old].Occupation;
         }
 
     else 
@@ -329,7 +362,7 @@ void maj_arene_serpant_position (Cellule **arene_p, int Longueur_Arene_p, int Ha
         Tete_Queu_p[1] = (*(Tete_Queu_p[1])).Remonter_vers_serpant_tete;
         
         //Partie Mise a jour arene
-        arene_p[y_new][x_new].Occupation = 1;
+        arene_p[y_new][x_new].Occupation = arene_p [y_old][x_old].Occupation+1+direction_p;
         }
     }
 #endif
