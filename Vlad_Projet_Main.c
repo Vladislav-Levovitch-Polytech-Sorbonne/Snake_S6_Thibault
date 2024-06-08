@@ -8,7 +8,7 @@ void arene_preparation (Cellule*** arene_p, int Longueur_Arene_p, int Hauteur_Ar
 void verification_cellule (Cellule ***arene, int Longueur_Arene_f, int Hauteur_Arene_f);
 void arene_muraille (Cellule **arene_m, int *Muraille_m, int Stock_Muraille_m);
 void verification_muraille (int * Muraille_v, int Stock_Muraille_v);
-void avance_ligne_droite (int direction_d, int distance_d, int* taille_serpent_d, int* tour_d, t_return_code* adversaire_d, t_return_code* moi_d, t_move* move_adv_d, Cellule **arene_d, int Longueur_Arene_d, int Hauteur_Arene_d, Serpant* serpent_moi_d, Serpant** Tete_Queu_moi_d, Serpant* serpent_adv_d, Serpant** Tete_Queu_adv_d);
+void avance_ligne_droite (int direction_d, int distance_d, int* taille_serpent_d, int* tour_d, t_return_code* adversaire_d, t_return_code* moi_d, t_move* move_adv_d, Cellule **arene_d, int Longueur_Arene_d, int Hauteur_Arene_d, Serpant* serpent_moi_d, Serpant** Tete_Queu_moi_d, Serpant* serpent_adv_d, Serpant** Tete_Queu_adv_d, int Placement_a_DROITE_d);
 void affichage_arene (Cellule **arene_a, int Longueur_Arene_a, int Hauteur_Arene_a);
 void maj_arene_serpant_position (Cellule **arene_p, int Longueur_Arene_p, int Hauteur_Arene_p, int direction_p, int* tour_p, Serpant* Serpant_p, Serpant **Tete_Queu_p);
 void liberation_serpent(Serpant* Serpant_l);
@@ -27,38 +27,36 @@ int main (void)
 	Cellule ** arene = NULL;
 
 	char gameName;
-	int start = 1; //Pour transmettre l information si l on est a Droite ou non
 	int taille_serpent = 2;
 	
-	t_return_code adversaire; 
-	t_return_code moi;
+	t_return_code adversaire = 0; 
+	t_return_code moi = 0;
 	t_move move_adv;
 	int tour = 0;
 	
 	
 	/*Ressource pour comprendre liste doublement chainee utilise ici pour representer les serpants 
 
-	Schema d une double liste - Pour notre cas assez similaire
-
+	Schema d une double liste - Pour notre cas assez similaire a la difference que la queue et la tete se reboucle
+	https://chgi.developpez.com/dblist/liste.gif
 
 	Rappel pour double liste
 	https://forums.commentcamarche.net/forum/affich-37604399-liste-doublement-chainee
-
-
 	*/
 	
 	int it = 0;
 	printf("\nTest Main Milieu %d fonctionnel\n", it);
 	it ++;
-	
+
+//PARTIE INITIALISATION DE L ENVIRONNEMENT DE JEU
 	connectToServer("localhost", 1234,"Vlad");
-	waitForSnakeGame(	"TRAINING SUPER_PLAYER difficulty=2 timeout=10 seed=2002 start=1",
-	 			&gameName, &Longueur_Arene, &Hauteur_Arene, &Stock_Muraille);
+	waitForSnakeGame(	"TRAINING SUPER_PLAYER difficulty=2 timeout=10 seed=2002 start=0",
+	 					&gameName, &Longueur_Arene, &Hauteur_Arene, &Stock_Muraille);
 
 	//Muraille
 		printf("L = %d H = %d nr_mur = %d %s \n", Longueur_Arene, Hauteur_Arene, Stock_Muraille, &gameName);
 		int * Muraille = (int*) malloc(Stock_Muraille* 4 * sizeof(int));
-		int Placement_a_DROITE = getSnakeArena(Muraille);
+		int Placement_a_DROITE = getSnakeArena(Muraille); //Merci Aymen Ahmed FILALI DARAI : explication getSnakeArena
 		printf("\nLe serpent joue commence a droite : %d\n",Placement_a_DROITE);
 
 	//Creation Serpant
@@ -122,58 +120,65 @@ int main (void)
 	printf ("Mon serpent est de taille : %d\n", taille_serpent );
 	printf (" + - + tours numéro : %d + - + \n", tour); tour++;
 
-	//1er Coup manuel pour tester et apprehender la gestion du jeu
-	adversaire = getMove( &move_adv );
-	moi = sendMove(0);
-	maj_arene_serpant_position (arene, Longueur_Arene, Hauteur_Arene, 0, &tour, Serpant_Moi, Tete_Queu_Moi);
-	maj_arene_serpant_position (arene, Longueur_Arene, Hauteur_Arene, move_adv, &tour, Serpant_Adv, Tete_Queu_Adv);
-	affichage_arene (arene, Longueur_Arene, Hauteur_Arene);
-	printArena();
-	printf (" + - + tours numéro : %d + - + \n", tour); tour++;
-	printf ("coup_moi : %d\t coup_adverse : %d\t mon serpent est de taille : %d\n",moi, adversaire, taille_serpent );
-	
-	//avance_ligne_droite(2, (1), &taille_serpent, &tour, &adversaire, &moi, &move_adv,arene, Longueur_Arene, Hauteur_Arene,Serpant_Moi, Tete_Queu_Moi, Serpant_Adv, Tete_Queu_Adv); //printArena(); //Test unitaire de deplacement
+//PARTIE DEPLACEMENT DANS LE JEU
 
-	//2eme Coup manuel pour tester et apprehender la gestion du jeu
-	adversaire = getMove( &move_adv );
-	moi = sendMove(3);
-	maj_arene_serpant_position (arene, Longueur_Arene, Hauteur_Arene, 3, &tour, Serpant_Moi, Tete_Queu_Moi);
-	maj_arene_serpant_position (arene, Longueur_Arene, Hauteur_Arene, move_adv, &tour, Serpant_Adv, Tete_Queu_Adv);
-	affichage_arene (arene, Longueur_Arene, Hauteur_Arene);
-	printArena();
-	printf ("coup_moi : %d\t coup_adverse : %d\t mon serpent est de taille : %d\n",moi, adversaire, taille_serpent );
-	printf (" + - + tours numéro : %d + - + \n", tour);tour++;
+	avance_ligne_droite(0, (1), &taille_serpent, &tour, &adversaire, &moi, &move_adv,arene, Longueur_Arene, Hauteur_Arene,Serpant_Moi, Tete_Queu_Moi, Serpant_Adv, Tete_Queu_Adv, Placement_a_DROITE); //printArena(); //Test unitaire de deplacement
+	avance_ligne_droite(3, (1), &taille_serpent, &tour, &adversaire, &moi, &move_adv,arene, Longueur_Arene, Hauteur_Arene,Serpant_Moi, Tete_Queu_Moi, Serpant_Adv, Tete_Queu_Adv, Placement_a_DROITE); //printArena(); //Test unitaire de deplacement
 
-	int tour_manuel_cylage_petit = 2;
+	int direction_manuel_cylage_petit = 2;
 	for ( int iii = 0; iii<6; iii++)
 	{
 		for ( int ii = 0; ii<4; ii++)
 		{
 			for ( int i = 0; i<2; i++)
 			{
-				avance_ligne_droite(tour_manuel_cylage_petit, 1, &taille_serpent, &tour, &adversaire, &moi, &move_adv,arene, Longueur_Arene, Hauteur_Arene,Serpant_Moi, Tete_Queu_Moi, Serpant_Adv, Tete_Queu_Adv); //All in one : Affiche l arene + Met a jour l arene et les serpants + deplace le serpant
+				avance_ligne_droite(direction_manuel_cylage_petit, 1, &taille_serpent, &tour, &adversaire, &moi, &move_adv,arene, Longueur_Arene, Hauteur_Arene,Serpant_Moi, Tete_Queu_Moi, Serpant_Adv, Tete_Queu_Adv, Placement_a_DROITE); //All in one : Affiche l arene + Met a jour l arene et les serpants + deplace le serpant
 				//printArena();
 				printf ("Cycle %d - %d - %d\n",iii, ii, i);
 			}
-			tour_manuel_cylage_petit--;
-			if (tour_manuel_cylage_petit<0) {tour_manuel_cylage_petit=3;} 
+			direction_manuel_cylage_petit--;
+			if (direction_manuel_cylage_petit<0) {direction_manuel_cylage_petit=3;} 
 		}
 	}
 
-	avance_ligne_droite(2, (2), &taille_serpent, &tour, &adversaire, &moi, &move_adv,arene, Longueur_Arene, Hauteur_Arene,Serpant_Moi, Tete_Queu_Moi, Serpant_Adv, Tete_Queu_Adv);
-	avance_ligne_droite(1, (3), &taille_serpent, &tour, &adversaire, &moi, &move_adv,arene, Longueur_Arene, Hauteur_Arene,Serpant_Moi, Tete_Queu_Moi, Serpant_Adv, Tete_Queu_Adv);
-	avance_ligne_droite(0, (Hauteur_Arene/2)+1, &taille_serpent, &tour, &adversaire, &moi, &move_adv,arene, Longueur_Arene, Hauteur_Arene,Serpant_Moi, Tete_Queu_Moi, Serpant_Adv, Tete_Queu_Adv);
-
-
+int joker_pass = 0; //Variable utile pour passer les 1eres rotation si on commence a Gauche.
+	printf("\nPlacement_a_DROITE = %d", Placement_a_DROITE);
+	if ( Placement_a_DROITE == 1 )
+        {
+			avance_ligne_droite(2, (2), &taille_serpent, &tour, &adversaire, &moi, &move_adv,arene, Longueur_Arene, Hauteur_Arene,Serpant_Moi, Tete_Queu_Moi, Serpant_Adv, Tete_Queu_Adv, Placement_a_DROITE);
+			avance_ligne_droite(1, (3), &taille_serpent, &tour, &adversaire, &moi, &move_adv,arene, Longueur_Arene, Hauteur_Arene,Serpant_Moi, Tete_Queu_Moi, Serpant_Adv, Tete_Queu_Adv, Placement_a_DROITE);
+			avance_ligne_droite(0, (Hauteur_Arene/2)+1, &taille_serpent, &tour, &adversaire, &moi, &move_adv,arene, Longueur_Arene, Hauteur_Arene,Serpant_Moi, Tete_Queu_Moi, Serpant_Adv, Tete_Queu_Adv, Placement_a_DROITE);
+			joker_pass = 1;
+		}
+	else if ( Placement_a_DROITE == 0 )
+        {
+			avance_ligne_droite(3, (1), &taille_serpent, &tour, &adversaire, &moi, &move_adv,arene, Longueur_Arene, Hauteur_Arene,Serpant_Moi, Tete_Queu_Moi, Serpant_Adv, Tete_Queu_Adv, Placement_a_DROITE);
+			avance_ligne_droite(2, (Hauteur_Arene/2)+1, &taille_serpent, &tour, &adversaire, &moi, &move_adv,arene, Longueur_Arene, Hauteur_Arene,Serpant_Moi, Tete_Queu_Moi, Serpant_Adv, Tete_Queu_Adv, Placement_a_DROITE);
+			joker_pass = 0;
+		}
 	
 	while ( moi == 0 && adversaire == 0) 
-	{
-		avance_ligne_droite(3, (Longueur_Arene- 1), &taille_serpent, &tour, &adversaire, &moi, &move_adv,arene, Longueur_Arene, Hauteur_Arene,Serpant_Moi, Tete_Queu_Moi, Serpant_Adv, Tete_Queu_Adv);
-		avance_ligne_droite(2, (Hauteur_Arene - 1), &taille_serpent, &tour, &adversaire, &moi, &move_adv,arene, Longueur_Arene, Hauteur_Arene,Serpant_Moi, Tete_Queu_Moi, Serpant_Adv, Tete_Queu_Adv);
-		avance_ligne_droite(1, (Longueur_Arene- 1), &taille_serpent, &tour, &adversaire, &moi, &move_adv,arene, Longueur_Arene, Hauteur_Arene,Serpant_Moi, Tete_Queu_Moi, Serpant_Adv, Tete_Queu_Adv);
-		avance_ligne_droite(0, (Hauteur_Arene - 1), &taille_serpent, &tour, &adversaire, &moi, &move_adv,arene, Longueur_Arene, Hauteur_Arene,Serpant_Moi, Tete_Queu_Moi, Serpant_Adv, Tete_Queu_Adv);
+	{	
+		if ( joker_pass == 1) //Si on joue a Gauche on commence a tourner par le bas, ici on tourne par le haut
+			{
+				avance_ligne_droite(3, (Longueur_Arene- 1), &taille_serpent, &tour, &adversaire, &moi, &move_adv,arene, Longueur_Arene, Hauteur_Arene,Serpant_Moi, Tete_Queu_Moi, Serpant_Adv, Tete_Queu_Adv, Placement_a_DROITE);
+				avance_ligne_droite(2, (Hauteur_Arene - 1), &taille_serpent, &tour, &adversaire, &moi, &move_adv,arene, Longueur_Arene, Hauteur_Arene,Serpant_Moi, Tete_Queu_Moi, Serpant_Adv, Tete_Queu_Adv, Placement_a_DROITE);
+			}
+		else 
+		{
+			joker_pass = 1; //Sauvegarder la 1er passage
+			avance_ligne_droite(1, (Longueur_Arene- 1), &taille_serpent, &tour, &adversaire, &moi, &move_adv,arene, Longueur_Arene, Hauteur_Arene,Serpant_Moi, Tete_Queu_Moi, Serpant_Adv, Tete_Queu_Adv, Placement_a_DROITE);
+			avance_ligne_droite(0, (Hauteur_Arene - 1), &taille_serpent, &tour, &adversaire, &moi, &move_adv,arene, Longueur_Arene, Hauteur_Arene,Serpant_Moi, Tete_Queu_Moi, Serpant_Adv, Tete_Queu_Adv, Placement_a_DROITE);
+		}
 	}
-	closeConnection();
+
+//FIN de Partie
+	if (moi == -1)
+		{printf ("\nNotre serpant a perdu mais il fera mieux la prochaine fois : )");}
+	else if (adversaire == -1)
+		{printf ("\nNotre serpant a gagner emogie confetie ^^");}
+	
+	closeConnection(); printf("\nFermeture Connection"); //Merci Quentin GODÉREAUX : rappel liberation memoire 
 
 	//Partie liberation de la memoire alloue
 	liberation_memoire(arene, Hauteur_Arene, Muraille, Serpant_Moi, Serpant_Adv, Tete_Queu_Moi, Tete_Queu_Adv);

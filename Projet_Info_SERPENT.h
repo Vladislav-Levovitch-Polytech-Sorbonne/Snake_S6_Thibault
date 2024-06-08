@@ -31,8 +31,8 @@ typedef struct _Cellule_struct
 
 #include "Projet_info_ARENE.h"
 
-void maj_arene_serpant_position(Cellule **arene_p, int Longueur_Arene_p, int Hauteur_Arene_p, int direction_p, int *tour_p, Serpant *Serpant_p, Serpant **Tete_Queu_p);
-void avance_ligne_droite(int direction_d, int distance_d, int *taille_serpent_d, int *tour_d, t_return_code *adversaire_d, t_return_code *moi_d, t_move *move_adv_d, Cellule **arene_d, int Longueur_Arene_d, int Hauteur_Arene_d, Serpant *serpent_moi_d, Serpant **Tete_Queu_moi_d, Serpant *serpent_adv_d, Serpant **Tete_Queu_adv_d);
-void liberation_serpent(Serpant *Serpant_l);
+void maj_arene_serpant_position (Cellule **arene_p, int Longueur_Arene_p, int Hauteur_Arene_p, int direction_p, int *tour_p, Serpant *Serpant_p, Serpant **Tete_Queu_p);
+void avance_ligne_droite (int direction_d, int distance_d, int* taille_serpent_d, int* tour_d, t_return_code* adversaire_d, t_return_code* moi_d, t_move* move_adv_d, Cellule **arene_d, int Longueur_Arene_d, int Hauteur_Arene_d, Serpant* serpent_moi_d, Serpant** Tete_Queu_moi_d, Serpant* serpent_adv_d, Serpant** Tete_Queu_adv_d, int Placement_a_DROITE_d);
+void liberation_serpent (Serpant *Serpant_l);
 
 #endif

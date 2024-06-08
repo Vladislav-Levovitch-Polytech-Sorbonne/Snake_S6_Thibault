@@ -3,14 +3,20 @@
 
 void maj_arene_serpant_position(Cellule **arene_p, int Longueur_Arene_p, int Hauteur_Arene_p, int direction_p, int* tour_p, Serpant* Serpant_p, Serpant **Tete_Queu_p);
 
-void avance_ligne_droite (int direction_d, int distance_d, int* taille_serpent_d, int* tour_d, t_return_code* adversaire_d, t_return_code* moi_d, t_move* move_adv_d, Cellule **arene_d, int Longueur_Arene_d, int Hauteur_Arene_d, Serpant* serpent_moi_d, Serpant** Tete_Queu_moi_d, Serpant* serpent_adv_d, Serpant** Tete_Queu_adv_d)
+void avance_ligne_droite (int direction_d, int distance_d, int* taille_serpent_d, int* tour_d, t_return_code* adversaire_d, t_return_code* moi_d, t_move* move_adv_d, Cellule **arene_d, int Longueur_Arene_d, int Hauteur_Arene_d, Serpant* serpent_moi_d, Serpant** Tete_Queu_moi_d, Serpant* serpent_adv_d, Serpant** Tete_Queu_adv_d, int Placement_a_DROITE_d)
 {
     for (int v = 0; v < distance_d; v++)   //PASS
     {
+        if (*adversaire_d != 0 || *moi_d != 0 ) {return;} //Protection supplementaire
+            if (Placement_a_DROITE_d == 1)
+                {*adversaire_d = getMove(move_adv_d);}
+            else if (Placement_a_DROITE_d == 0)
+                {*moi_d = sendMove(direction_d);}
         if (*adversaire_d != 0 || *moi_d != 0 ) {return;}
-        *adversaire_d = getMove(move_adv_d);
-        if (*adversaire_d != 0 || *moi_d != 0 ) {return;}
-        *moi_d = sendMove(direction_d);
+            if (Placement_a_DROITE_d == 0)
+                {*adversaire_d = getMove(move_adv_d);}
+            else if (Placement_a_DROITE_d == 1)
+                {*moi_d = sendMove(direction_d);}
         if (*adversaire_d != 0 || *moi_d != 0 ) {return;}
 	    maj_arene_serpant_position(arene_d, Longueur_Arene_d, Hauteur_Arene_d, direction_d, tour_d, serpent_moi_d, Tete_Queu_moi_d);
         maj_arene_serpant_position(arene_d, Longueur_Arene_d, Hauteur_Arene_d, *move_adv_d, tour_d, serpent_adv_d, Tete_Queu_adv_d);
@@ -23,8 +29,8 @@ void avance_ligne_droite (int direction_d, int distance_d, int* taille_serpent_d
 		}; 
 		printf ("coup_moi : %d\t coup_adverse : %d\t mon serpent est de taille : %d\n",*moi_d, *adversaire_d, *taille_serpent_d );	
 		printf (" + + + + le coup adverse est %d + + + + ", *move_adv_d); 
-		(*tour_d)++; 
 		printf (" + - + tours numéro : %d + - + \n", *tour_d);
+        (*tour_d)++; 
 	}	
 }
 

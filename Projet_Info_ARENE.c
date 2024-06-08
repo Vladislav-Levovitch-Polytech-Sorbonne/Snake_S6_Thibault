@@ -164,7 +164,7 @@ void affichage_arene (Cellule **arene_a, int Longueur_Arene_a, int Hauteur_Arene
         if ( v == 0)
             {printf("\x1b[36m  ┃\x1b[0m"); v = 1;}
         else
-            {printf("\x1b[0m  ┃\x1b[36m"); v = 0;}
+            {printf("\x1b[0m  ┃\x1b[0m"); v = 0;}
         }
         if (h==0){}
 		else {printf ("\n ");}
@@ -174,13 +174,15 @@ void affichage_arene (Cellule **arene_a, int Longueur_Arene_a, int Hauteur_Arene
         {
             if (arene_a[h][l].Occupation >= 1 && (arene_a[h][l].W == 0||arene_a[h][l].W == 1) )
             {// Echantillons ◀ ▶ ▲ ▼ ■
+                if (arene_a[h][l].W == 0)
+                    {printf(" ");}
+                else if (arene_a[h][l].W == 1)
+                    {printf("┃");} //Correction bug mineur ici les murs pouvaient etre de couleurs si le serpant passait par la droite 
+
                 if (arene_a[h][l].Occupation<20 && arene_a[h][l].Occupation>=10) //Ouverture de la couleur GAUCHE = ROUGE, DROITE = BLEU
                     {printf("\x1b[31m");}
                 else 
                     {printf("\x1b[36m");}
-                
-                if (arene_a[h][l].W == 0){printf(" ");}
-                else if (arene_a[h][l].W == 1){printf("┃");}
 
                 if      ((((arene_a[h][l].Occupation)-1)%10)==0) {printf("▲");} //Dehachage_dechiffrement de l occupation
                 else if ((((arene_a[h][l].Occupation)-1)%10)==1) {printf("▶");}
