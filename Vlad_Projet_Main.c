@@ -9,6 +9,9 @@ void verification_muraille (int * Muraille_v, int Stock_Muraille_v);
 void avance_ligne_droite (int direction_d, int distance_d, int* taille_serpent_d, int* tour_d, t_return_code* adversaire_d, t_return_code* moi_d, t_move* move_adv_d, Cellule **arene_d, int Longueur_Arene_d, int Hauteur_Arene_d, Serpant* serpent_moi_d, Serpant** Tete_Queu_moi_d, Serpant* serpent_adv_d, Serpant** Tete_Queu_adv_d);
 void affichage_arene (Cellule **arene_a, int Longueur_Arene_a, int Hauteur_Arene_a);
 void maj_arene_serpant_position (Cellule **arene_p, int Longueur_Arene_p, int Hauteur_Arene_p, int direction_p, int* tour_p, Serpant* Serpant_p,Serpant **Tete_Queu_p);
+void liberation_serpent(Serpant* Serpant_l);
+void liberation_memoire(Cellule **arene_l, int Hauteur_Arene_l, int *Muraille_l, Serpant *Serpant_Moi_l, Serpant *Serpant_Adv_l, Serpant **Tete_Queu_Moi_l, Serpant **Tete_Queu_Adv_l);
+
 
 int main (void)
 	{
@@ -161,7 +164,7 @@ int main (void)
 
 
 	
-	while (1) 
+	while ( moi == 0 && adversaire == 0) 
 	{
 		avance_ligne_droite(3, (Longueur_Arene- 1), &taille_serpent, &tour, &adversaire, &moi, &move_adv,arene, Longueur_Arene, Hauteur_Arene,Serpant_Moi, Tete_Queu_Moi, Serpant_Adv, Tete_Queu_Adv);
 		avance_ligne_droite(2, (Hauteur_Arene - 1), &taille_serpent, &tour, &adversaire, &moi, &move_adv,arene, Longueur_Arene, Hauteur_Arene,Serpant_Moi, Tete_Queu_Moi, Serpant_Adv, Tete_Queu_Adv);
@@ -169,6 +172,9 @@ int main (void)
 		avance_ligne_droite(0, (Hauteur_Arene - 1), &taille_serpent, &tour, &adversaire, &moi, &move_adv,arene, Longueur_Arene, Hauteur_Arene,Serpant_Moi, Tete_Queu_Moi, Serpant_Adv, Tete_Queu_Adv);
 	}
 	closeConnection();
+
+	//Partie liberation de la memoire alloue
+	liberation_memoire(arene, Hauteur_Arene, Muraille, Serpant_Moi, Serpant_Adv, Tete_Queu_Moi, Tete_Queu_Adv);
 
 	printf("\nTest Main Fin fonctionnel\n");
 

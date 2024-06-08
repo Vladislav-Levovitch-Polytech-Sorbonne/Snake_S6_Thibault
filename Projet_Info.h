@@ -138,8 +138,11 @@ void avance_ligne_droite (int direction_d, int distance_d, int* taille_serpent_d
 {
     for (int v = 0; v < distance_d; v++)   //PASS
     {
+        if (*adversaire_d != 0 || *moi_d != 0 ) {return;}
         *adversaire_d = getMove(move_adv_d);
+        if (*adversaire_d != 0 || *moi_d != 0 ) {return;}
         *moi_d = sendMove(direction_d);
+        if (*adversaire_d != 0 || *moi_d != 0 ) {return;}
 	    maj_arene_serpant_position(arene_d, Longueur_Arene_d, Hauteur_Arene_d, direction_d, tour_d, serpent_moi_d, Tete_Queu_moi_d);
         maj_arene_serpant_position(arene_d, Longueur_Arene_d, Hauteur_Arene_d, *move_adv_d, tour_d, serpent_adv_d, Tete_Queu_adv_d);
 	    affichage_arene (arene_d, Longueur_Arene_d, Hauteur_Arene_d);
@@ -351,6 +354,46 @@ void maj_arene_serpant_position (Cellule **arene_p, int Longueur_Arene_p, int Ha
 }
 #endif
 
+void liberation_serpent(Serpant* Serpant_l) 
+{
+    if (Serpant_l == NULL) 
+        {return;}
+
+    Serpant* current = Serpant_l;
+    Serpant* Portion_suivante;
+
+    do //On libere au moins un element qui est la tete
+    {
+        Portion_suivante = (*current).Redescendre_vers_serpant_queu;
+        free(current);
+        current = Portion_suivante;
+    } while (current != Serpant_l);
+}
+
+void liberation_memoire(Cellule **arene_l, int Hauteur_Arene_l, int *Muraille_l, Serpant *Serpant_Moi_l, Serpant *Serpant_Adv_l, Serpant **Tete_Queu_Moi_l, Serpant **Tete_Queu_Adv_l)
+{
+    //Liberation memoire arene
+    for (int h = 0; h < Hauteur_Arene_l; h++) 
+    {
+        free(arene_l[h]);
+    }
+    free(arene_l);
+    printf("\nLiberation memoire arene effectuee");
+    
+    //Liberation memoire muraille
+    free(Muraille_l);
+    printf("\nLiberation memoire muraille effectuee");
+
+    //Liberation memoire Serpants
+    liberation_serpent(Serpant_Moi_l);
+    liberation_serpent(Serpant_Adv_l);
+    printf("\nLiberation memoire muraille effectuee");
+
+    //Liberation memoire tetes et queues serpents
+    free(Tete_Queu_Moi_l);
+    free(Tete_Queu_Adv_l);
+    printf("\nLiberation memoire tete_queue effectuee\n");
+}
 
 /*
 
