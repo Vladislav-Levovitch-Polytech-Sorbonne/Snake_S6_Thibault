@@ -50,16 +50,30 @@ int main (void)
 	waitForSnakeGame(	"TRAINING SUPER_PLAYER difficulty=2 timeout=10 seed=2002 start=1",
 	 			&gameName, &Longueur_Arene, &Hauteur_Arene, &Stock_Muraille);
 
+	//Muraille
+		printf("L = %d H = %d nr_mur = %d %s \n", Longueur_Arene, Hauteur_Arene, Stock_Muraille, &gameName);
+		int * Muraille = (int*) malloc(Stock_Muraille* 4 * sizeof(int));
+		int Placement_a_DROITE = getSnakeArena(Muraille);
+		printf("\nLe serpent joue commence a droite : %d\n",Placement_a_DROITE);
+
 	//Creation Serpant
 		Serpant * Serpant_Moi = (Serpant *) malloc (1*sizeof(Serpant));
         Serpant * Serpant_Adv = (Serpant *) malloc (1*sizeof(Serpant));
         
-        (*Serpant_Moi).Coordonnee_Portion_Serpant.x = Longueur_Arene-3;
+		if ( Placement_a_DROITE == 1 )
+        {
+			(*Serpant_Moi).Coordonnee_Portion_Serpant.x = Longueur_Arene-3;
+			(*Serpant_Adv).Coordonnee_Portion_Serpant.x = 2;
+		}
+		else if ( Placement_a_DROITE == 0 )
+        {
+			(*Serpant_Moi).Coordonnee_Portion_Serpant.x = 2;
+			(*Serpant_Adv).Coordonnee_Portion_Serpant.x = Longueur_Arene-3;
+		}
         (*Serpant_Moi).Coordonnee_Portion_Serpant.y = Hauteur_Arene/2;
         (*Serpant_Moi).Remonter_vers_serpant_tete = Serpant_Moi;
         (*Serpant_Moi).Redescendre_vers_serpant_queu = Serpant_Moi;
         
-        (*Serpant_Adv).Coordonnee_Portion_Serpant.x = 2;
         (*Serpant_Adv).Coordonnee_Portion_Serpant.y = Hauteur_Arene/2;
         (*Serpant_Adv).Remonter_vers_serpant_tete = Serpant_Adv;
         (*Serpant_Adv).Redescendre_vers_serpant_queu = Serpant_Adv;
@@ -77,11 +91,7 @@ int main (void)
         
         printf ("y = %d\n", (*Tete_Queu_Adv[1]).Coordonnee_Portion_Serpant.y);
         printf ("x = %d\n", (*((*Tete_Queu_Moi[1]).Remonter_vers_serpant_tete)).Coordonnee_Portion_Serpant.x);
-	
-	//Muraille
-	printf("L = %d H = %d nr_mur = %d %s \n", Longueur_Arene, Hauteur_Arene, Stock_Muraille, &gameName);
-	int * Muraille = (int*) malloc(Stock_Muraille* 4 * sizeof(int));
-	getSnakeArena(Muraille);
+
 	verification_muraille (Muraille, Stock_Muraille);
 	printf("\nTest Main Milieu %d fonctionnel\n", it);it ++;
 	
@@ -131,19 +141,19 @@ int main (void)
 
 	int tour_manuel_cylage_petit = 2;
 	for ( int iii = 0; iii<6; iii++)
-		{
+	{
 		for ( int ii = 0; ii<4; ii++)
-			{
+		{
 			for ( int i = 0; i<2; i++)
-				{
+			{
 				avance_ligne_droite(tour_manuel_cylage_petit, 1, &taille_serpent, &tour, &adversaire, &moi, &move_adv,arene, Longueur_Arene, Hauteur_Arene,Serpant_Moi, Tete_Queu_Moi, Serpant_Adv, Tete_Queu_Adv); //All in one : Affiche l arene + Met a jour l arene et les serpants + deplace le serpant
 				//printArena();
 				printf ("Cycle %d - %d - %d\n",iii, ii, i);
-				}
+			}
 			tour_manuel_cylage_petit--;
 			if (tour_manuel_cylage_petit<0) {tour_manuel_cylage_petit=3;} 
-			}
 		}
+	}
 
 	avance_ligne_droite(2, (2), &taille_serpent, &tour, &adversaire, &moi, &move_adv,arene, Longueur_Arene, Hauteur_Arene,Serpant_Moi, Tete_Queu_Moi, Serpant_Adv, Tete_Queu_Adv);
 	avance_ligne_droite(1, (3), &taille_serpent, &tour, &adversaire, &moi, &move_adv,arene, Longueur_Arene, Hauteur_Arene,Serpant_Moi, Tete_Queu_Moi, Serpant_Adv, Tete_Queu_Adv);
@@ -151,16 +161,16 @@ int main (void)
 
 
 	
-while (1) 
+	while (1) 
 	{
-	avance_ligne_droite(3, (Longueur_Arene- 1), &taille_serpent, &tour, &adversaire, &moi, &move_adv,arene, Longueur_Arene, Hauteur_Arene,Serpant_Moi, Tete_Queu_Moi, Serpant_Adv, Tete_Queu_Adv);
-	avance_ligne_droite(2, (Hauteur_Arene - 1), &taille_serpent, &tour, &adversaire, &moi, &move_adv,arene, Longueur_Arene, Hauteur_Arene,Serpant_Moi, Tete_Queu_Moi, Serpant_Adv, Tete_Queu_Adv);
-	avance_ligne_droite(1, (Longueur_Arene- 1), &taille_serpent, &tour, &adversaire, &moi, &move_adv,arene, Longueur_Arene, Hauteur_Arene,Serpant_Moi, Tete_Queu_Moi, Serpant_Adv, Tete_Queu_Adv);
-	avance_ligne_droite(0, (Hauteur_Arene - 1), &taille_serpent, &tour, &adversaire, &moi, &move_adv,arene, Longueur_Arene, Hauteur_Arene,Serpant_Moi, Tete_Queu_Moi, Serpant_Adv, Tete_Queu_Adv);
+		avance_ligne_droite(3, (Longueur_Arene- 1), &taille_serpent, &tour, &adversaire, &moi, &move_adv,arene, Longueur_Arene, Hauteur_Arene,Serpant_Moi, Tete_Queu_Moi, Serpant_Adv, Tete_Queu_Adv);
+		avance_ligne_droite(2, (Hauteur_Arene - 1), &taille_serpent, &tour, &adversaire, &moi, &move_adv,arene, Longueur_Arene, Hauteur_Arene,Serpant_Moi, Tete_Queu_Moi, Serpant_Adv, Tete_Queu_Adv);
+		avance_ligne_droite(1, (Longueur_Arene- 1), &taille_serpent, &tour, &adversaire, &moi, &move_adv,arene, Longueur_Arene, Hauteur_Arene,Serpant_Moi, Tete_Queu_Moi, Serpant_Adv, Tete_Queu_Adv);
+		avance_ligne_droite(0, (Hauteur_Arene - 1), &taille_serpent, &tour, &adversaire, &moi, &move_adv,arene, Longueur_Arene, Hauteur_Arene,Serpant_Moi, Tete_Queu_Moi, Serpant_Adv, Tete_Queu_Adv);
 	}
 	closeConnection();
 
 	printf("\nTest Main Fin fonctionnel\n");
 
 	return 0; //Attention,  si l on return 1 c'est un signe d erreur le compilateur le signifiera
-	}
+}
