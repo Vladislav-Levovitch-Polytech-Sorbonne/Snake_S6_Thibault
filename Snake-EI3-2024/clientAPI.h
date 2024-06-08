@@ -17,7 +17,7 @@ File: clientAPI.h
 Copyright 2016-2020 T. Hilaire, J. Brajard
 */
 
-//Normalement deja inclu dans le ClientAPI.h <- SnakeAPI.h <- Projet_Info.h
+
 
 #ifndef __API_CLIENT_GAME__
 #define __API_CLIENT_GAME__
