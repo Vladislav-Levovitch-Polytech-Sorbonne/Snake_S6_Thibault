@@ -1,7 +1,13 @@
+#ifndef __STD__ //Normalement deja inclu dans le ClientAPI.h <- SnakeAPI.h <- Projet_Info.h
+#define __STD__
+#include <stdlib.h>
+#include <stdio.h>
+#endif
+
 #ifndef __API_Projet_Info__
 #define __API_Projet_Info__
 #include "snakeAPI.h"
-//Test git 
+
 typedef struct _Coordonnee_struct
 {
     int x;
@@ -132,33 +138,6 @@ void arene_muraille(Cellule **arene_m, int *Muraille_m, int Stock_Muraille_m)
     }
 }
 
-	
-//void avance_ligne_droite (int direction, int distance, int* taille_serpent_d, int* tour_d, t_return_code* adversaire_d, t_return_code* moi_d, t_move* move_adv_d)//Version sans la mise a jour
-void avance_ligne_droite (int direction_d, int distance_d, int* taille_serpent_d, int* tour_d, t_return_code* adversaire_d, t_return_code* moi_d, t_move* move_adv_d, Cellule **arene_d, int Longueur_Arene_d, int Hauteur_Arene_d, Serpant* serpent_moi_d, Serpant** Tete_Queu_moi_d, Serpant* serpent_adv_d, Serpant** Tete_Queu_adv_d)
-{
-    for (int v = 0; v < distance_d; v++)   //PASS
-    {
-        if (*adversaire_d != 0 || *moi_d != 0 ) {return;}
-        *adversaire_d = getMove(move_adv_d);
-        if (*adversaire_d != 0 || *moi_d != 0 ) {return;}
-        *moi_d = sendMove(direction_d);
-        if (*adversaire_d != 0 || *moi_d != 0 ) {return;}
-	    maj_arene_serpant_position(arene_d, Longueur_Arene_d, Hauteur_Arene_d, direction_d, tour_d, serpent_moi_d, Tete_Queu_moi_d);
-        maj_arene_serpant_position(arene_d, Longueur_Arene_d, Hauteur_Arene_d, *move_adv_d, tour_d, serpent_adv_d, Tete_Queu_adv_d);
-	    affichage_arene (arene_d, Longueur_Arene_d, Hauteur_Arene_d);
-        //printArena();
-
-        if (((*tour_d) % 10) == 0)
-        {
-			(*taille_serpent_d)++;
-		}; 
-		printf ("coup_moi : %d\t coup_adverse : %d\t mon serpent est de taille : %d\n",*moi_d, *adversaire_d, *taille_serpent_d );	
-		printf (" + + + + le coup adverse est %d + + + + ", *move_adv_d); 
-		(*tour_d)++; 
-		printf (" + - + tours numéro : %d + - + \n", *tour_d);
-	}	
-}
-
 void affichage_arene (Cellule **arene_a, int Longueur_Arene_a, int Hauteur_Arene_a)
 {
     int v = 0;
@@ -226,13 +205,15 @@ void affichage_arene (Cellule **arene_a, int Longueur_Arene_a, int Hauteur_Arene
         {
             if (arene_a[h][l].Occupation >= 1 && (arene_a[h][l].W == 0||arene_a[h][l].W == 1) )
             {// Echantillons ◀ ▶ ▲ ▼ ■
+                if (arene_a[h][l].W == 0)
+                    {printf(" ");}
+                else if (arene_a[h][l].W == 1)
+                    {printf("┃");} //Correction bug mineur ici les murs pouvaient etre de couleurs si le serpant passait par la droite 
+
                 if (arene_a[h][l].Occupation<20 && arene_a[h][l].Occupation>=10) //Ouverture de la couleur GAUCHE = ROUGE, DROITE = BLEU
                     {printf("\x1b[31m");}
                 else 
                     {printf("\x1b[36m");}
-                
-                if (arene_a[h][l].W == 0){printf(" ");}
-                else if (arene_a[h][l].W == 1){printf("┃");}
 
                 if      ((((arene_a[h][l].Occupation)-1)%10)==0) {printf("▲");} //Dehachage_dechiffrement de l occupation
                 else if ((((arene_a[h][l].Occupation)-1)%10)==1) {printf("▶");}
@@ -253,7 +234,7 @@ void affichage_arene (Cellule **arene_a, int Longueur_Arene_a, int Hauteur_Arene
         if (arene_a[h][Longueur_Arene_a-1].Occupation >= 1)
         {// Echantillons ◀ ▶ ▲ ▼ ■
             if (arene_a[h][Longueur_Arene_a-1].Occupation<20 && arene_a[h][Longueur_Arene_a-1].Occupation>=10) //Ouverture de la couleur GAUCHE = ROUGE, DROITE = BLEU
-                {printf("\x1b[31m ");}
+                {printf("\x1b[31m ");} 
             else 
                 {printf("\x1b[36m ");}
 
@@ -352,7 +333,32 @@ void maj_arene_serpant_position (Cellule **arene_p, int Longueur_Arene_p, int Ha
         arene_p[y_new][x_new].Occupation = arene_p [y_old][x_old].Occupation+1+direction_p;
     }
 }
-#endif
+
+//void avance_ligne_droite (int direction, int distance, int* taille_serpent_d, int* tour_d, t_return_code* adversaire_d, t_return_code* moi_d, t_move* move_adv_d)//Version sans la mise a jour
+void avance_ligne_droite (int direction_d, int distance_d, int* taille_serpent_d, int* tour_d, t_return_code* adversaire_d, t_return_code* moi_d, t_move* move_adv_d, Cellule **arene_d, int Longueur_Arene_d, int Hauteur_Arene_d, Serpant* serpent_moi_d, Serpant** Tete_Queu_moi_d, Serpant* serpent_adv_d, Serpant** Tete_Queu_adv_d)
+{
+    for (int v = 0; v < distance_d; v++)   //PASS
+    {
+        if (*adversaire_d != 0 || *moi_d != 0 ) {printf("Break %d\n", *tour_d); return;} //Securite en cas de fin de partie
+        *adversaire_d = getMove(move_adv_d);
+        if (*adversaire_d != 0 || *moi_d != 0 ) {printf("Break %d\n", *tour_d); return;} //Securite en cas de fin de partie
+        *moi_d = sendMove(direction_d);
+        
+	    maj_arene_serpant_position(arene_d, Longueur_Arene_d, Hauteur_Arene_d, direction_d, tour_d, serpent_moi_d, Tete_Queu_moi_d);
+        maj_arene_serpant_position(arene_d, Longueur_Arene_d, Hauteur_Arene_d, *move_adv_d, tour_d, serpent_adv_d, Tete_Queu_adv_d);
+	    affichage_arene (arene_d, Longueur_Arene_d, Hauteur_Arene_d);
+        //printArena();
+
+        if (((*tour_d) % 10) == 0)
+        {
+			(*taille_serpent_d)++;
+		}; 
+		printf ("coup_moi : %d\t coup_adverse : %d\t mon serpent est de taille : %d\n",*moi_d, *adversaire_d, *taille_serpent_d );	
+		printf (" + + + + le coup adverse est %d + + + + ", *move_adv_d); 
+		printf (" + - + tours numéro : %d + - + \n", *tour_d);
+        (*tour_d)++; //Harmonisation du numero d affichage du tour notamment pour les 2 premiers etant fait en manuel auparavant
+	}	
+}
 
 void liberation_serpent(Serpant* Serpant_l) 
 {
@@ -395,6 +401,7 @@ void liberation_memoire(Cellule **arene_l, int Hauteur_Arene_l, int *Muraille_l,
     printf("\nLiberation memoire tete_queue effectuee\n");
 }
 
+#endif
 /*
 
 Les Papas des Elec Thibault HILAIRE Yann DOUZE Benoit FABRE Annick ALEXANDRE IFitep Michel REDON 
