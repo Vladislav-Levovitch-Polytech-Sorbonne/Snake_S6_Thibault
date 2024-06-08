@@ -17,14 +17,13 @@ File: clientAPI.h
 Copyright 2016-2020 T. Hilaire, J. Brajard
 */
 
-#ifndef __STD__ //Normalement deja inclu dans le ClientAPI.h <- SnakeAPI.h <- Projet_Info.h
-#define __STD__
-#include <stdlib.h>
-#include <stdio.h>
-#endif
+//Normalement deja inclu dans le ClientAPI.h <- SnakeAPI.h <- Projet_Info.h
 
 #ifndef __API_CLIENT_GAME__
 #define __API_CLIENT_GAME__
+
+#include <stdio.h>
+
 
 #define MAX_GET_MOVE 128	    	/* maximum size of the string representing a move */
 #define MAX_MESSAGE 1024			/* maximum size of the message move */

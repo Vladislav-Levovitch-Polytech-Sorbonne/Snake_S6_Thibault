@@ -1,4 +1,5 @@
-#ifndef __STD__ //Normalement deja inclu dans le ClientAPI.h <- SnakeAPI.h <- Projet_Info.h
+//Normalement deja inclu dans le ClientAPI.h <- SnakeAPI.h <- Projet_Info.h
+#ifndef __STD__ 
 #define __STD__
 #include <stdlib.h>
 #include <stdio.h>

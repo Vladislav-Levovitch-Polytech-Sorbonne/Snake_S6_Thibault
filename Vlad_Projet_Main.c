@@ -1,10 +1,11 @@
-#ifndef __STD__ //Normalement deja inclu dans le ClientAPI.h <- SnakeAPI.h <- Projet_Info.h
+#include "Projet_Info.h"
+
+//Normalement deja inclu dans le ClientAPI.h <- SnakeAPI.h <- Projet_Info.h
+#ifndef __STD__ 
 #define __STD__
 #include <stdlib.h>
 #include <stdio.h>
 #endif
-
-#include "Projet_Info.h"
 
 void arene_preparation (Cellule*** arene_p, int Longueur_Arene_p, int Hauteur_Arene_p);
 void verification_cellule (Cellule ***arene, int Longueur_Arene_f, int Hauteur_Arene_f);
@@ -43,6 +44,7 @@ int main (void)
 
 	Schema d une double liste - Pour notre cas assez similaire
 
+
 	Rappel pour double liste
 	https://forums.commentcamarche.net/forum/affich-37604399-liste-doublement-chainee
 
@@ -52,7 +54,6 @@ int main (void)
 	printf("\nTest Main Milieu %d fonctionnel\n", it);
 	it ++;
 	
-//PARTIE INITIALISATION DE L ENVIRONNEMENT DE JEU
 	connectToServer("localhost", 1234,"Vlad");
 	waitForSnakeGame(	"TRAINING SUPER_PLAYER difficulty=2 timeout=10 seed=2002 start=1",
 	 					&gameName, &Longueur_Arene, &Hauteur_Arene, &Stock_Muraille);
@@ -124,8 +125,6 @@ int main (void)
 	printf ("Mon serpent est de taille : %d\n", taille_serpent );
 	printf (" + - + tours numéro : %d + - + \n", tour); tour++;
 
-//PARTIE DEPLACEMENT DANS LE JEU
-
 	avance_ligne_droite(0, (1), &taille_serpent, &tour, &adversaire, &moi, &move_adv,arene, Longueur_Arene, Hauteur_Arene,Serpant_Moi, Tete_Queu_Moi, Serpant_Adv, Tete_Queu_Adv); //printArena(); //Test unitaire de deplacement
 	avance_ligne_droite(3, (1), &taille_serpent, &tour, &adversaire, &moi, &move_adv,arene, Longueur_Arene, Hauteur_Arene,Serpant_Moi, Tete_Queu_Moi, Serpant_Adv, Tete_Queu_Adv); //printArena(); //Test unitaire de deplacement
 
@@ -176,7 +175,7 @@ int main (void)
 			avance_ligne_droite(0, (Hauteur_Arene - 1), &taille_serpent, &tour, &adversaire, &moi, &move_adv,arene, Longueur_Arene, Hauteur_Arene,Serpant_Moi, Tete_Queu_Moi, Serpant_Adv, Tete_Queu_Adv);
 		}
 	}
-	closeConnection(); printf("\nFermeture Connection"); //Merci Quentin GODÉREAUX : memoire 
+	closeConnection(); printf("\nFermeture Connection"); //Merci Quentin GODÉREAUX : rappel liberation memoire 
 
 	//Partie liberation de la memoire alloue
 	liberation_memoire(arene, Hauteur_Arene, Muraille, Serpant_Moi, Serpant_Adv, Tete_Queu_Moi, Tete_Queu_Adv);

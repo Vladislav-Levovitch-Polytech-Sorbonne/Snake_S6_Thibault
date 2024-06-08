@@ -21,15 +21,11 @@ File: snkaeAPI.h
 
 Copyright 2024 T. Hilaire
 */
-#ifndef __STD__ //Normalement deja inclu dans le ClientAPI.h <- SnakeAPI.h <- Projet_Info.h
-#define __STD__
-#include <stdlib.h>
-#include <stdio.h>
-#endif
 
 #ifndef __API_CLIENT_SNAKE__
 #define __API_CLIENT_SNAKE__
 #include "clientAPI.h"
+
 
 /* Definition of a move */
 typedef enum {
