@@ -5,22 +5,22 @@ void maj_arene_serpant_position(Cellule **arene_p, int Longueur_Arene_p, int Hau
 
 void maj_coordonne(int* x_c, int* y_c, int direction_c) 
 {
-    if (direction_c == 0) // Haut
+    if (direction_c == 0) //Haut
     {
         *y_c -= 1;
     }
         
-    else if (direction_c == 2) // Bas
+    else if (direction_c == 2) //Bas
     {
         *y_c += 1;
     }
     
-    else if (direction_c == 3) // Gauche
+    else if (direction_c == 3) //Gauche
     {
         *x_c -= 1;
 	}
     
-    else if (direction_c == 1) // Droite
+    else if (direction_c == 1) //Droite
     {
         *x_c += 1;
 	}
@@ -28,26 +28,29 @@ void maj_coordonne(int* x_c, int* y_c, int direction_c)
 
 int eviter_les_obstacles (int direction_e, int x_0_e, int y_0_e, Cellule **arene_e, int Longueur_Arene_e, int Hauteur_Arene_e, Serpant** Tete_Queu_Moi_e, int Profondeur)
 {
-    Cellule current_cell = arene_e [y_0_e][x_0_e];
-    int cycle[4] = {current_cell.N, current_cell.E, current_cell.S, current_cell.W}; //Tableau repertoriant les informations dans l'ordre
+    Cellule current_cell = arene_e[y_0_e][x_0_e];
+    int cycle[4] = {current_cell.N, current_cell.E, current_cell.S, current_cell.W};
     
     int direction_anti_cyclique = direction_e;
     
-    for (int t_4 = 0; t_4 <4; t_4++)
+    for (int t_4 = 0; t_4 < 4; t_4++)
     {
         int y_1 = y_0_e;
         int x_1 = x_0_e;
         
         maj_coordonne(&x_1, &y_1, direction_anti_cyclique);        
+        
         //Verification des coordonnees 
-        if (x_1 < 0 || y_1 < 0 || x_1 >= Longueur_Arene_e || y_1 >= Hauteur_Arene_e) 
+        if (x_1 < 0 || y_1 < 0 || x_1 >= Longueur_Arene_e || y_1 >= Hauteur_Arene_e || 
+            (((!((y_0_e == (*Tete_Queu_Moi_e[0]).Coordonnee_Portion_Serpant.y) && (x_0_e == (*Tete_Queu_Moi_e[0]).Coordonnee_Portion_Serpant.x))) /* On verifie seulement si l on n est pas dans la premiere consigne de direction */
+            && (direction_anti_cyclique == (direction_e + 2) % 4)))) /* Si l on n essaie pas de revenir en arriere */
         {
             direction_anti_cyclique = (direction_anti_cyclique + 1) % 4;
             continue; //ByPass si direction sort de l arene
         }
 
-        printf("\n%d + + + y=%02d x=%02d Test en cours avec %d\n", Profondeur,y_1 ,x_1 ,direction_anti_cyclique);
-        if (cycle[direction_anti_cyclique] == 0 && arene_e[y_1][x_1].Occupation == 0) //Si la case est accesible ET qu il n y a pas d occupation
+        printf("\n%d + + + y=%02d x=%02d Test en cours avec %d\n", Profondeur, y_1, x_1, direction_anti_cyclique);
+        if (cycle[direction_anti_cyclique] == 0 && arene_e[y_1][x_1].Occupation == 0) //Si la case est accessible ET qu il n y a pas d occupation
         {   
             if (Profondeur == 1) 
             {
@@ -55,17 +58,16 @@ int eviter_les_obstacles (int direction_e, int x_0_e, int y_0_e, Cellule **arene
                 return direction_anti_cyclique;
             }
 
-            int next_direction = eviter_les_obstacles(direction_anti_cyclique,x_1, y_1, arene_e, Longueur_Arene_e, Hauteur_Arene_e, Tete_Queu_Moi_e, Profondeur - 1);
+            int next_direction = eviter_les_obstacles(direction_anti_cyclique, x_1, y_1, arene_e, Longueur_Arene_e, Hauteur_Arene_e, Tete_Queu_Moi_e, Profondeur - 1);
             if (next_direction != -1) 
             {
                 return direction_anti_cyclique;
             }
-            
         }
-        direction_anti_cyclique = (direction_anti_cyclique+1)%4;
+        direction_anti_cyclique = (direction_anti_cyclique + 1) % 4;
     }
 
-    //On pourrait prevoir ici un if (else) de derniere chance pour verifier si l une des cases adjacentes n est pas la queue ( eventuellement a un modulo 10 de tours pres pour esperer survivre si la queue bouge )
+    //On pourrait prevoir ici un if (else) de derniere chance pour verifier si l une des cases adjacentes n est pas la queue (eventuellement à un modulo 10 de tours pres pour esperer survivre si la queue bouge)
     return -1; //Si aucun chemin n a ete trouve
 }
 
@@ -74,7 +76,7 @@ void avance_ligne_droite (int direction_d, int distance_d, int* taille_serpent_d
     for (int v = 0; v < distance_d; v++)   //PASS
     {
         //Idee de Nicola BENSIDHOUM de deleguer la gestion de la direction a une autre fonction (j ai beaucoup aime faire sous traiter la tache avec une fonction exterieur ca m a rappele la factorisation en POO)
-        int direction_prioritaire = eviter_les_obstacles (direction_d, ((*Tete_Queu_Moi_d[0]).Coordonnee_Portion_Serpant.x),((*Tete_Queu_Moi_d[0]).Coordonnee_Portion_Serpant.y), arene_d, Longueur_Arene_d, Hauteur_Arene_d, Tete_Queu_Moi_d, 2);
+        int direction_prioritaire = eviter_les_obstacles (direction_d, ((*Tete_Queu_Moi_d[0]).Coordonnee_Portion_Serpant.x),((*Tete_Queu_Moi_d[0]).Coordonnee_Portion_Serpant.y), arene_d, Longueur_Arene_d, Hauteur_Arene_d, Tete_Queu_Moi_d, 3);
         if ( direction_prioritaire == -1 ) //S il n y a aucun chemin viable autant reprendre le 1er 
             {
                 direction_prioritaire = direction_d;
@@ -108,7 +110,7 @@ void avance_ligne_droite (int direction_d, int distance_d, int* taille_serpent_d
         {
             printf ("coup_Moi : %d\t coup_adverse : %d\t mon serpent est de taille : %d\n",*moi_d, *adversaire_d, *taille_serpent_d );	
             printf (" + + + + le coup adverse est %d + + + + ", *move_adv_d); 
-            printf (" + - + tours numéro : %d + - + \n", *tour_d);
+            printf (" + - + tours numero : %d + - + \n", *tour_d);
         }
         (*tour_d)++;
     }	

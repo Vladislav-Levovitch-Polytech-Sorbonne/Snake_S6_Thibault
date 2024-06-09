@@ -51,7 +51,7 @@ int main (void)
 
 //PARTIE INITIALISATION DE L ENVIRONNEMENT DE JEU
 	connectToServer("localhost", 1234,"Vlad");
-	waitForSnakeGame(	"TRAINING SUPER_PLAYER difficulty=2 timeout=10 seed=2000 start=1",
+	waitForSnakeGame(	"TRAINING SUPER_PLAYER difficulty=2 timeout=10 seed=75 start=1",
 	 					&gameName, &Longueur_Arene, &Hauteur_Arene, &Stock_Muraille);
 
 	//Muraille
@@ -172,6 +172,7 @@ int joker_pass = 0; //Variable utile pour passer les 1eres rotation si on commen
 	}
 
 //FIN de Partie
+	affichage_arene (arene, Longueur_Arene, Hauteur_Arene);
 	printf ("coup_Moi : %d\t coup_adverse : %d\t mon serpent est de taille : %d\n",moi, adversaire, taille_serpent );	
 
 	if (moi == -1)
