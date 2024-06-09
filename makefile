@@ -19,10 +19,14 @@ Snake-EI3-2024/clientAPI.o : Snake-EI3-2024/clientAPI.c Snake-EI3-2024/clientAPI
 Snake-EI3-2024/snakeAPI.o : Snake-EI3-2024/snakeAPI.c Snake-EI3-2024/snakeAPI.h
 	gcc $(CFLAGS) -o Snake-EI3-2024/snakeAPI.o -c Snake-EI3-2024/snakeAPI.c
 
-# Convention proposee par Thibault HILAIRE de scinder le run et le make
+#Convention proposee par Thibault HILAIRE de scinder le run et le make
 run : Vlad_Projet_SNAKE_EXECUTABLE_v
 	./Vlad_Projet_SNAKE_EXECUTABLE_v
 
-# Excellente idee de Ayoub LADJICI de mettre un clean
+#Excellente idee de Ayoub LADJICI de mettre un clean
 clean :
 	rm $(All_Object)
+
+#Pour laver uniquement le repertoir courent sans toucher au Snake-EI3-2024/ Proposer par Vladislav BALAYAN pour eviter de regenerer les .o immobile en moyenne 
+clear :
+	rm *.o

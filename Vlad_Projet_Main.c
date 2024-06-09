@@ -9,8 +9,8 @@ void verification_cellule (Cellule ***arene, int Longueur_Arene_f, int Hauteur_A
 void arene_muraille (Cellule **arene_m, int *Muraille_m, int Stock_Muraille_m);
 void verification_muraille (int * Muraille_v, int Stock_Muraille_v);
 void maj_coordonne(int* x_c, int* y_c, int direction_c);
-int eviter_les_obstacles (Cellule **arene_e, int direction_e, Serpant** Tete_Queu_Moi_e);
-void avance_ligne_droite (int direction_d, int distance_d, int* taille_serpent_d, int* tour_d, t_return_code* adversaire_d, t_return_code* moi_d, t_move* move_adv_d, Cellule **arene_d, int Longueur_Arene_d, int Hauteur_Arene_d, Serpant* serpent_moi_d, Serpant** Tete_Queu_moi_d, Serpant* serpent_adv_d, Serpant** Tete_Queu_adv_d, int Placement_a_DROITE_d);
+int  eviter_les_obstacles (int direction_e, Cellule **arene_e, int Longueur_Arene_e, int Hauteur_Arene_e, Serpant** Tete_Queu_Moi_e, int Profondeur);
+void avance_ligne_droite (int direction_d, int distance_d, int* taille_serpent_d, int* tour_d, t_return_code* adversaire_d, t_return_code* moi_d, t_move* move_adv_d, Cellule **arene_d, int Longueur_Arene_d, int Hauteur_Arene_d, Serpant* serpent_Moi_d, Serpant** Tete_Queu_Moi_d, Serpant* serpent_adv_d, Serpant** Tete_Queu_adv_d, int Placement_a_DROITE_d);
 void affichage_arene (Cellule **arene_a, int Longueur_Arene_a, int Hauteur_Arene_a);
 void maj_arene_serpant_position (Cellule **arene_p, int Longueur_Arene_p, int Hauteur_Arene_p, int direction_p, int* tour_p, Serpant* Serpant_p, Serpant **Tete_Queu_p);
 void liberation_serpent(Serpant* Serpant_l);
@@ -36,7 +36,6 @@ int main (void)
 	t_move move_adv;
 	int tour = 0;
 	
-	
 	/*Ressource pour comprendre liste doublement chainee utilise ici pour representer les serpants 
 
 	Schema d une double liste - Pour notre cas assez similaire a la difference que la queue et la tete se reboucle
@@ -52,7 +51,7 @@ int main (void)
 
 //PARTIE INITIALISATION DE L ENVIRONNEMENT DE JEU
 	connectToServer("localhost", 1234,"Vlad");
-	waitForSnakeGame(	"TRAINING SUPER_PLAYER difficulty=3 timeout=10 seed=75 start=1",
+	waitForSnakeGame(	"TRAINING SUPER_PLAYER difficulty=2 timeout=10 seed=2000 start=1",
 	 					&gameName, &Longueur_Arene, &Hauteur_Arene, &Stock_Muraille);
 
 	//Muraille
@@ -100,6 +99,8 @@ int main (void)
 	verification_muraille (Muraille, Stock_Muraille);
 	printf("\nTest Main Milieu %d fonctionnel\n", it);it ++;
 	
+	sendComment("Bonne chance mon copain ^^");
+
 	//Arene
 	arene_preparation (&arene, Longueur_Arene, Hauteur_Arene);
 	printf("\n\nTest Main Milieu fonctionnel %d   %d   %d\n\n", arene[0][0].N, arene[3][6].W, arene[Hauteur_Arene-1][4].S );
@@ -171,12 +172,14 @@ int joker_pass = 0; //Variable utile pour passer les 1eres rotation si on commen
 	}
 
 //FIN de Partie
-	printf ("coup_moi : %d\t coup_adverse : %d\t mon serpent est de taille : %d\n",moi, adversaire, taille_serpent );	
+	printf ("coup_Moi : %d\t coup_adverse : %d\t mon serpent est de taille : %d\n",moi, adversaire, taille_serpent );	
 
 	if (moi == -1)
 		{printf ("\nNotre serpant a perdu mais il fera mieux la prochaine fois : )");}
 	else if (adversaire == -1)
-		{printf ("\nNotre serpant a gagner emogie confetie ^^");}
+		{
+			sendComment("Mon serpant a gagner emogie confetie ^^ Merci mon copain ^^");
+			printf ("\nNotre serpant a gagner emogie confetie ^^");}
 	
 	closeConnection(); printf("\nFermeture Connection"); //Merci Quentin GODÉREAUX : rappel liberation memoire 
 

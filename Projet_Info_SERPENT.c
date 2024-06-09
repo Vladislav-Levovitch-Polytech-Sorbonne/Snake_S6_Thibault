@@ -26,51 +26,61 @@ void maj_coordonne(int* x_c, int* y_c, int direction_c)
 	}
 }
 
-int eviter_les_obstacles (Cellule **arene_e, int direction_e, Serpant** Tete_Queu_Moi_e)
+int eviter_les_obstacles (int direction_e, int x_0_e, int y_0_e, Cellule **arene_e, int Longueur_Arene_e, int Hauteur_Arene_e, Serpant** Tete_Queu_Moi_e, int Profondeur)
 {
-    int x_0 = ((*Tete_Queu_Moi_e[0]).Coordonnee_Portion_Serpant.x);
-    int y_0 = ((*Tete_Queu_Moi_e[0]).Coordonnee_Portion_Serpant.y);
-
-    Cellule current_cell = arene_e [y_0][x_0];
+    Cellule current_cell = arene_e [y_0_e][x_0_e];
     int cycle[4] = {current_cell.N, current_cell.E, current_cell.S, current_cell.W}; //Tableau repertoriant les informations dans l'ordre
     
     int direction_anti_cyclique = direction_e;
-    //int max_distance = 2; //Profondeur de la vision de verification des futurs cases 
-    //Test de limite de map a ajouter au cas ou mais la 1er condition sortira du if avant de devoir verifier les voisins s il y a un mur 
-//for (int profondeur = 0; profondeur <= max_distance; profondeur++) 
-//{
+    
     for (int t_4 = 0; t_4 <4; t_4++)
     {
-        int y_1 = y_0;
-        int x_1 = x_0;
+        int y_1 = y_0_e;
+        int x_1 = x_0_e;
         
         maj_coordonne(&x_1, &y_1, direction_anti_cyclique);        
-        
-        printf("\n y=%d x=%d Test en cours avec %d\n",y_1,x_1,direction_anti_cyclique);
+        //Verification des coordonnees 
+        if (x_1 < 0 || y_1 < 0 || x_1 >= Longueur_Arene_e || y_1 >= Hauteur_Arene_e) 
+        {
+            direction_anti_cyclique = (direction_anti_cyclique + 1) % 4;
+            continue; //ByPass si direction sort de l arene
+        }
+
+        printf("\n%d + + + y=%02d x=%02d Test en cours avec %d\n", Profondeur,y_1 ,x_1 ,direction_anti_cyclique);
         if (cycle[direction_anti_cyclique] == 0 && arene_e[y_1][x_1].Occupation == 0) //Si la case est accesible ET qu il n y a pas d occupation
         {   
+            if (Profondeur == 1) 
+            {
+                printf("\nChoix de return %d\n", direction_anti_cyclique);
+                return direction_anti_cyclique;
+            }
+
+            int next_direction = eviter_les_obstacles(direction_anti_cyclique,x_1, y_1, arene_e, Longueur_Arene_e, Hauteur_Arene_e, Tete_Queu_Moi_e, Profondeur - 1);
+            if (next_direction != -1) 
+            {
+                return direction_anti_cyclique;
+            }
             
-            
-            printf("\nChoix de return %d\n",direction_anti_cyclique);
-            return direction_anti_cyclique;
         }
         direction_anti_cyclique = (direction_anti_cyclique+1)%4;
     }
-//}
+
     //On pourrait prevoir ici un if (else) de derniere chance pour verifier si l une des cases adjacentes n est pas la queue ( eventuellement a un modulo 10 de tours pres pour esperer survivre si la queue bouge )
     return -1; //Si aucun chemin n a ete trouve
 }
 
-void avance_ligne_droite (int direction_d, int distance_d, int* taille_serpent_d, int* tour_d, t_return_code* adversaire_d, t_return_code* moi_d, t_move* move_adv_d, Cellule **arene_d, int Longueur_Arene_d, int Hauteur_Arene_d, Serpant* serpent_moi_d, Serpant** Tete_Queu_moi_d, Serpant* serpent_adv_d, Serpant** Tete_Queu_adv_d, int Placement_a_DROITE_d)
+void avance_ligne_droite (int direction_d, int distance_d, int* taille_serpent_d, int* tour_d, t_return_code* adversaire_d, t_return_code* moi_d, t_move* move_adv_d, Cellule **arene_d, int Longueur_Arene_d, int Hauteur_Arene_d, Serpant* serpent_Moi_d, Serpant** Tete_Queu_Moi_d, Serpant* serpent_adv_d, Serpant** Tete_Queu_adv_d, int Placement_a_DROITE_d)
 {
     for (int v = 0; v < distance_d; v++)   //PASS
     {
         //Idee de Nicola BENSIDHOUM de deleguer la gestion de la direction a une autre fonction (j ai beaucoup aime faire sous traiter la tache avec une fonction exterieur ca m a rappele la factorisation en POO)
-        int direction_prioritaire = eviter_les_obstacles (arene_d, direction_d, Tete_Queu_moi_d);
+        int direction_prioritaire = eviter_les_obstacles (direction_d, ((*Tete_Queu_Moi_d[0]).Coordonnee_Portion_Serpant.x),((*Tete_Queu_Moi_d[0]).Coordonnee_Portion_Serpant.y), arene_d, Longueur_Arene_d, Hauteur_Arene_d, Tete_Queu_Moi_d, 2);
         if ( direction_prioritaire == -1 ) //S il n y a aucun chemin viable autant reprendre le 1er 
             {
                 direction_prioritaire = direction_d;
-                printf ("\nCher amis joueur, ce fut un plaisir de passer du temps avec vous mais malheuresement nous allons nous quitter, ceci sera mon dernier coup a moins d un miracle :D\n");
+                sendComment("Cher amis joueur, ce fut un plaisir de passer du temps avec vous mais malheuresement nous allons");
+                sendComment("nous quitter, ceci sera mon dernier coup a moins d un miracle :D");
+                printf ("\n + + + + + Cher amis joueur, ce fut un plaisir de passer du temps avec vous mais malheuresement nous allons nous quitter, ceci sera mon dernier coup a moins d un miracle :D\n");
             }
 
         if (*adversaire_d != 0 || *moi_d != 0 ) {return;} //Protection supplementaire
@@ -84,7 +94,7 @@ void avance_ligne_droite (int direction_d, int distance_d, int* taille_serpent_d
             else if (Placement_a_DROITE_d == 1)
                 {*moi_d = sendMove(direction_prioritaire);}
         if (*adversaire_d != 0 || *moi_d != 0 ) {return;}
-	    maj_arene_serpant_position(arene_d, Longueur_Arene_d, Hauteur_Arene_d, direction_prioritaire, tour_d, serpent_moi_d, Tete_Queu_moi_d);
+	    maj_arene_serpant_position(arene_d, Longueur_Arene_d, Hauteur_Arene_d, direction_prioritaire, tour_d, serpent_Moi_d, Tete_Queu_Moi_d);
         maj_arene_serpant_position(arene_d, Longueur_Arene_d, Hauteur_Arene_d, *move_adv_d, tour_d, serpent_adv_d, Tete_Queu_adv_d);
 	    affichage_arene (arene_d, Longueur_Arene_d, Hauteur_Arene_d);
         //printArena();
@@ -92,10 +102,14 @@ void avance_ligne_droite (int direction_d, int distance_d, int* taille_serpent_d
         if (((*tour_d) % 10) == 0)
         {
 			(*taille_serpent_d)++;
-		}; 
-		printf ("coup_moi : %d\t coup_adverse : %d\t mon serpent est de taille : %d\n",*moi_d, *adversaire_d, *taille_serpent_d );	
-		printf (" + + + + le coup adverse est %d + + + + ", *move_adv_d); 
-		printf (" + - + tours numéro : %d + - + \n", *tour_d);
+		};
+
+        if (*adversaire_d != 0 || *moi_d != 0 )
+        {
+            printf ("coup_Moi : %d\t coup_adverse : %d\t mon serpent est de taille : %d\n",*moi_d, *adversaire_d, *taille_serpent_d );	
+            printf (" + + + + le coup adverse est %d + + + + ", *move_adv_d); 
+            printf (" + - + tours numéro : %d + - + \n", *tour_d);
+        }
         (*tour_d)++;
     }	
 }
