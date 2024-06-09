@@ -8,6 +8,7 @@ void arene_preparation (Cellule*** arene_p, int Longueur_Arene_p, int Hauteur_Ar
 void verification_cellule (Cellule ***arene, int Longueur_Arene_f, int Hauteur_Arene_f);
 void arene_muraille (Cellule **arene_m, int *Muraille_m, int Stock_Muraille_m);
 void verification_muraille (int * Muraille_v, int Stock_Muraille_v);
+int eviter_les_obstacles (Cellule **arene_e, int direction_e, Serpant** Tete_Queu_Moi_e);
 void avance_ligne_droite (int direction_d, int distance_d, int* taille_serpent_d, int* tour_d, t_return_code* adversaire_d, t_return_code* moi_d, t_move* move_adv_d, Cellule **arene_d, int Longueur_Arene_d, int Hauteur_Arene_d, Serpant* serpent_moi_d, Serpant** Tete_Queu_moi_d, Serpant* serpent_adv_d, Serpant** Tete_Queu_adv_d, int Placement_a_DROITE_d);
 void affichage_arene (Cellule **arene_a, int Longueur_Arene_a, int Hauteur_Arene_a);
 void maj_arene_serpant_position (Cellule **arene_p, int Longueur_Arene_p, int Hauteur_Arene_p, int direction_p, int* tour_p, Serpant* Serpant_p, Serpant **Tete_Queu_p);
