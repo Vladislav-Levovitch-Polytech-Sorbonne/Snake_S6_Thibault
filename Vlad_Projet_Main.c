@@ -8,6 +8,7 @@ void arene_preparation (Cellule*** arene_p, int Longueur_Arene_p, int Hauteur_Ar
 void verification_cellule (Cellule ***arene, int Longueur_Arene_f, int Hauteur_Arene_f);
 void arene_muraille (Cellule **arene_m, int *Muraille_m, int Stock_Muraille_m);
 void verification_muraille (int * Muraille_v, int Stock_Muraille_v);
+void maj_coordonne(int* x_c, int* y_c, int direction_c);
 int eviter_les_obstacles (Cellule **arene_e, int direction_e, Serpant** Tete_Queu_Moi_e);
 void avance_ligne_droite (int direction_d, int distance_d, int* taille_serpent_d, int* tour_d, t_return_code* adversaire_d, t_return_code* moi_d, t_move* move_adv_d, Cellule **arene_d, int Longueur_Arene_d, int Hauteur_Arene_d, Serpant* serpent_moi_d, Serpant** Tete_Queu_moi_d, Serpant* serpent_adv_d, Serpant** Tete_Queu_adv_d, int Placement_a_DROITE_d);
 void affichage_arene (Cellule **arene_a, int Longueur_Arene_a, int Hauteur_Arene_a);
@@ -51,7 +52,7 @@ int main (void)
 
 //PARTIE INITIALISATION DE L ENVIRONNEMENT DE JEU
 	connectToServer("localhost", 1234,"Vlad");
-	waitForSnakeGame(	"TRAINING SUPER_PLAYER difficulty=2 timeout=10 seed=2002 start=0",
+	waitForSnakeGame(	"TRAINING SUPER_PLAYER difficulty=3 timeout=10 seed=75 start=1",
 	 					&gameName, &Longueur_Arene, &Hauteur_Arene, &Stock_Muraille);
 
 	//Muraille
@@ -143,37 +144,35 @@ int main (void)
 	}
 
 int joker_pass = 0; //Variable utile pour passer les 1eres rotation si on commence a Gauche.
-	printf("\nPlacement_a_DROITE = %d", Placement_a_DROITE);
-	if ( Placement_a_DROITE == 1 )
-        {
+	if ( Placement_a_DROITE == 1 ) 
+        {	//Coup speciaux si on joue par la Droite
 			avance_ligne_droite(2, (2), &taille_serpent, &tour, &adversaire, &moi, &move_adv,arene, Longueur_Arene, Hauteur_Arene,Serpant_Moi, Tete_Queu_Moi, Serpant_Adv, Tete_Queu_Adv, Placement_a_DROITE);
 			avance_ligne_droite(1, (3), &taille_serpent, &tour, &adversaire, &moi, &move_adv,arene, Longueur_Arene, Hauteur_Arene,Serpant_Moi, Tete_Queu_Moi, Serpant_Adv, Tete_Queu_Adv, Placement_a_DROITE);
 			avance_ligne_droite(0, (Hauteur_Arene/2)+1, &taille_serpent, &tour, &adversaire, &moi, &move_adv,arene, Longueur_Arene, Hauteur_Arene,Serpant_Moi, Tete_Queu_Moi, Serpant_Adv, Tete_Queu_Adv, Placement_a_DROITE);
 			joker_pass = 1;
 		}
 	else if ( Placement_a_DROITE == 0 )
-        {
+        {	//Coup speciaux si on joue par la Gauche
 			avance_ligne_droite(3, (1), &taille_serpent, &tour, &adversaire, &moi, &move_adv,arene, Longueur_Arene, Hauteur_Arene,Serpant_Moi, Tete_Queu_Moi, Serpant_Adv, Tete_Queu_Adv, Placement_a_DROITE);
 			avance_ligne_droite(2, (Hauteur_Arene/2)+1, &taille_serpent, &tour, &adversaire, &moi, &move_adv,arene, Longueur_Arene, Hauteur_Arene,Serpant_Moi, Tete_Queu_Moi, Serpant_Adv, Tete_Queu_Adv, Placement_a_DROITE);
 			joker_pass = 0;
 		}
 	
-	while ( moi == 0 && adversaire == 0) 
+	while ( moi == 0 && adversaire == 0) //Pensez a couper la machine si le jeu est fini dans avance_ligne_droite aussi
 	{	
 		if ( joker_pass == 1) //Si on joue a Gauche on commence a tourner par le bas, ici on tourne par le haut
 			{
 				avance_ligne_droite(3, (Longueur_Arene- 1), &taille_serpent, &tour, &adversaire, &moi, &move_adv,arene, Longueur_Arene, Hauteur_Arene,Serpant_Moi, Tete_Queu_Moi, Serpant_Adv, Tete_Queu_Adv, Placement_a_DROITE);
 				avance_ligne_droite(2, (Hauteur_Arene - 1), &taille_serpent, &tour, &adversaire, &moi, &move_adv,arene, Longueur_Arene, Hauteur_Arene,Serpant_Moi, Tete_Queu_Moi, Serpant_Adv, Tete_Queu_Adv, Placement_a_DROITE);
 			}
-		else 
-		{
 			joker_pass = 1; //Sauvegarder la 1er passage
 			avance_ligne_droite(1, (Longueur_Arene- 1), &taille_serpent, &tour, &adversaire, &moi, &move_adv,arene, Longueur_Arene, Hauteur_Arene,Serpant_Moi, Tete_Queu_Moi, Serpant_Adv, Tete_Queu_Adv, Placement_a_DROITE);
 			avance_ligne_droite(0, (Hauteur_Arene - 1), &taille_serpent, &tour, &adversaire, &moi, &move_adv,arene, Longueur_Arene, Hauteur_Arene,Serpant_Moi, Tete_Queu_Moi, Serpant_Adv, Tete_Queu_Adv, Placement_a_DROITE);
-		}
 	}
 
 //FIN de Partie
+	printf ("coup_moi : %d\t coup_adverse : %d\t mon serpent est de taille : %d\n",moi, adversaire, taille_serpent );	
+
 	if (moi == -1)
 		{printf ("\nNotre serpant a perdu mais il fera mieux la prochaine fois : )");}
 	else if (adversaire == -1)

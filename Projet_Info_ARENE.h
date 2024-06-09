@@ -1,8 +1,8 @@
 #ifndef __API_Projet_Info_SERPENT__
 #define __API_Projet_Info_SERPENT__
 
-#include "snakeAPI.h"
-#include "clientAPI.h"
+#include "Snake-EI3-2024/snakeAPI.h"
+#include "Snake-EI3-2024/clientAPI.h"
 #include <stdlib.h>
 
 typedef struct _Coordonnee_struct

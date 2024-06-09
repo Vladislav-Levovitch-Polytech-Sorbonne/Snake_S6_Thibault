@@ -3,38 +3,76 @@
 
 void maj_arene_serpant_position(Cellule **arene_p, int Longueur_Arene_p, int Hauteur_Arene_p, int direction_p, int* tour_p, Serpant* Serpant_p, Serpant **Tete_Queu_p);
 
-int eviter_les_obstacles (Cellule **arene_e, int direction_e, Serpant** Tete_Queu_Moi_e)
+void maj_coordonne(int* x_c, int* y_c, int direction_c) 
+{
+    if (direction_c == 0) // Haut
     {
-        int x_0 = ((*Tete_Queu_Moi_e[0]).Coordonnee_Portion_Serpant.x);
-        int y_0 = ((*Tete_Queu_Moi_e[0]).Coordonnee_Portion_Serpant.y);
-
-        Cellule current_cell = arene_e [y_0][x_0];
-        int cycle[4] = {current_cell.N, current_cell.E, current_cell.S, current_cell.W}; //Tableau repertoriant les informations dans l'ordre
-        
-        int direction_anti_cyclique = direction_e;
-        for (int t_4 = 0; t_4 <4; t_4++)
-            {
-                int y_1 = y_0;
-                int x_1 = x_0;
-
-                if (direction_anti_cyclique == 0) {y_1 = y_0 - 1;} // Haut
-                else if (direction_anti_cyclique == 2) {y_1 = y_0 + 1;} //Bas
-                else if (direction_anti_cyclique == 3) {x_1 = x_0 - 1;} //Gauche
-                else if (direction_anti_cyclique == 1) {x_1 = x_0 + 1;} //Droite
-
-                if (cycle[direction_anti_cyclique] == 0 && arene_e[y_1][x_1].Occupation == 0) //Si la case est accesible ET qu il n y a pas d occupation
-                    {return direction_anti_cyclique;}
-                direction_anti_cyclique +=1;
-                if (direction_anti_cyclique == 4) {direction_anti_cyclique = 0;}
-            }
-        return direction_anti_cyclique;
+        *y_c -= 1;
     }
+        
+    else if (direction_c == 2) // Bas
+    {
+        *y_c += 1;
+    }
+    
+    else if (direction_c == 3) // Gauche
+    {
+        *x_c -= 1;
+	}
+    
+    else if (direction_c == 1) // Droite
+    {
+        *x_c += 1;
+	}
+}
+
+int eviter_les_obstacles (Cellule **arene_e, int direction_e, Serpant** Tete_Queu_Moi_e)
+{
+    int x_0 = ((*Tete_Queu_Moi_e[0]).Coordonnee_Portion_Serpant.x);
+    int y_0 = ((*Tete_Queu_Moi_e[0]).Coordonnee_Portion_Serpant.y);
+
+    Cellule current_cell = arene_e [y_0][x_0];
+    int cycle[4] = {current_cell.N, current_cell.E, current_cell.S, current_cell.W}; //Tableau repertoriant les informations dans l'ordre
+    
+    int direction_anti_cyclique = direction_e;
+    //int max_distance = 2; //Profondeur de la vision de verification des futurs cases 
+    //Test de limite de map a ajouter au cas ou mais la 1er condition sortira du if avant de devoir verifier les voisins s il y a un mur 
+//for (int profondeur = 0; profondeur <= max_distance; profondeur++) 
+//{
+    for (int t_4 = 0; t_4 <4; t_4++)
+    {
+        int y_1 = y_0;
+        int x_1 = x_0;
+        
+        maj_coordonne(&x_1, &y_1, direction_anti_cyclique);        
+        
+        printf("\n y=%d x=%d Test en cours avec %d\n",y_1,x_1,direction_anti_cyclique);
+        if (cycle[direction_anti_cyclique] == 0 && arene_e[y_1][x_1].Occupation == 0) //Si la case est accesible ET qu il n y a pas d occupation
+        {   
+            
+            
+            printf("\nChoix de return %d\n",direction_anti_cyclique);
+            return direction_anti_cyclique;
+        }
+        direction_anti_cyclique = (direction_anti_cyclique+1)%4;
+    }
+//}
+    //On pourrait prevoir ici un if (else) de derniere chance pour verifier si l une des cases adjacentes n est pas la queue ( eventuellement a un modulo 10 de tours pres pour esperer survivre si la queue bouge )
+    return -1; //Si aucun chemin n a ete trouve
+}
 
 void avance_ligne_droite (int direction_d, int distance_d, int* taille_serpent_d, int* tour_d, t_return_code* adversaire_d, t_return_code* moi_d, t_move* move_adv_d, Cellule **arene_d, int Longueur_Arene_d, int Hauteur_Arene_d, Serpant* serpent_moi_d, Serpant** Tete_Queu_moi_d, Serpant* serpent_adv_d, Serpant** Tete_Queu_adv_d, int Placement_a_DROITE_d)
 {
     for (int v = 0; v < distance_d; v++)   //PASS
     {
+        //Idee de Nicola BENSIDHOUM de deleguer la gestion de la direction a une autre fonction (j ai beaucoup aime faire sous traiter la tache avec une fonction exterieur ca m a rappele la factorisation en POO)
         int direction_prioritaire = eviter_les_obstacles (arene_d, direction_d, Tete_Queu_moi_d);
+        if ( direction_prioritaire == -1 ) //S il n y a aucun chemin viable autant reprendre le 1er 
+            {
+                direction_prioritaire = direction_d;
+                printf ("\nCher amis joueur, ce fut un plaisir de passer du temps avec vous mais malheuresement nous allons nous quitter, ceci sera mon dernier coup a moins d un miracle :D\n");
+            }
+
         if (*adversaire_d != 0 || *moi_d != 0 ) {return;} //Protection supplementaire
             if (Placement_a_DROITE_d == 1)
                 {*adversaire_d = getMove(move_adv_d);}
@@ -59,8 +97,7 @@ void avance_ligne_droite (int direction_d, int distance_d, int* taille_serpent_d
 		printf (" + + + + le coup adverse est %d + + + + ", *move_adv_d); 
 		printf (" + - + tours numéro : %d + - + \n", *tour_d);
         (*tour_d)++;
-    direction_prioritaire = direction_d; //On remet en priorite la distance de parcourt en longueur de l arene
-	}	
+    }	
 }
 
 void maj_arene_serpant_position (Cellule **arene_p, int Longueur_Arene_p, int Hauteur_Arene_p, int direction_p, int* tour_p, Serpant* Serpant_p,Serpant **Tete_Queu_p) //On pourrat ajouter le serpant de qui est ce pour ensuite faire la maj pour les couleurs et triangle.
@@ -73,25 +110,7 @@ void maj_arene_serpant_position (Cellule **arene_p, int Longueur_Arene_p, int Ha
     int x_old = x_new;
     arene_p [y_old][x_old].Occupation -= (arene_p [y_old][x_old].Occupation)%10;
 
-    if (direction_p == 0) // Haut
-    {
-        y_new -= 1;
-    }
-        
-    else if (direction_p == 2) // Bas
-    {
-        y_new += 1;
-    }
-    
-    else if (direction_p == 3) // Gauche
-    {
-        x_new -= 1;
-	}
-    
-    else if (direction_p == 1) // Droite
-    {
-        x_new += 1;
-	}
+    maj_coordonne(&x_new, &y_new, direction_p);
     
     if (x_new<0 || y_new<0 || x_new>=Longueur_Arene_p || y_new>=Hauteur_Arene_p ) 
 	{
