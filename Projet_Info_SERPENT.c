@@ -75,29 +75,47 @@ void avance_ligne_droite (int direction_d, int distance_d, int* taille_serpent_d
 {
     for (int v = 0; v < distance_d; v++)   //PASS
     {
-        //Idee de Nicola BENSIDHOUM de deleguer la gestion de la direction a une autre fonction (j ai beaucoup aime faire sous traiter la tache avec une fonction exterieur ca m a rappele la factorisation en POO)
-        int Quotient_Intellectuel = 11;
-        int direction_prioritaire = eviter_les_obstacles (direction_d, ((*Tete_Queu_Moi_d[0]).Coordonnee_Portion_Serpant.x),((*Tete_Queu_Moi_d[0]).Coordonnee_Portion_Serpant.y), arene_d, Longueur_Arene_d, Hauteur_Arene_d, Tete_Queu_Moi_d, Quotient_Intellectuel);
-        if ( direction_prioritaire == -1 ) //S il n y a aucun chemin viable autant reprendre le 1er 
-            {
-                direction_prioritaire = direction_d;
-                sendComment("Cher amis joueur, ce fut un plaisir de passer du temps avec toi,dernier coup a moins d un miracle :D");
-                printf ("\n + + + + + Cher amis joueur, ce fut un plaisir de passer du temps avec vous mais malheuresement nous allons nous quitter, ceci sera mon dernier coup a moins d un miracle :D\n");
-            }
-
         if (*adversaire_d != 0 || *moi_d != 0 ) {return;} //Protection supplementaire
             if (Placement_a_DROITE_d == 1)
-                {*adversaire_d = getMove(move_adv_d);}
+                {
+                *adversaire_d = getMove(move_adv_d);
+                maj_arene_serpant_position(arene_d, Longueur_Arene_d, Hauteur_Arene_d, *move_adv_d, tour_d, serpent_adv_d, Tete_Queu_adv_d);
+                }
             else if (Placement_a_DROITE_d == 0)
-                {*moi_d = sendMove(direction_prioritaire);}
+                {
+                //Idee de Nicola BENSIDHOUM de deleguer la gestion de la direction a une autre fonction (j ai beaucoup aime faire sous traiter la tache avec une fonction exterieur ca m a rappele la factorisation en POO)
+                int Quotient_Intellectuel = 11;
+                int direction_prioritaire = eviter_les_obstacles (direction_d, ((*Tete_Queu_Moi_d[0]).Coordonnee_Portion_Serpant.x),((*Tete_Queu_Moi_d[0]).Coordonnee_Portion_Serpant.y), arene_d, Longueur_Arene_d, Hauteur_Arene_d, Tete_Queu_Moi_d, Quotient_Intellectuel);
+                if ( direction_prioritaire == -1 ) //S il n y a aucun chemin viable autant reprendre le 1er 
+                    {
+                        direction_prioritaire = direction_d;
+                        sendComment("Cher amis joueur, ce fut un plaisir de passer du temps avec toi,dernier coup a moins d un miracle :D");
+                        printf ("\n + + + + + Cher amis joueur, ce fut un plaisir de passer du temps avec vous mais malheuresement nous allons nous quitter, ceci sera mon dernier coup a moins d un miracle :D\n");
+                    }
+                *moi_d = sendMove(direction_prioritaire);
+                maj_arene_serpant_position(arene_d, Longueur_Arene_d, Hauteur_Arene_d, direction_prioritaire, tour_d, serpent_Moi_d, Tete_Queu_Moi_d);
+                }
         if (*adversaire_d != 0 || *moi_d != 0 ) {return;}
             if (Placement_a_DROITE_d == 0)
-                {*adversaire_d = getMove(move_adv_d);}
+                {
+                *adversaire_d = getMove(move_adv_d);
+                maj_arene_serpant_position(arene_d, Longueur_Arene_d, Hauteur_Arene_d, *move_adv_d, tour_d, serpent_adv_d, Tete_Queu_adv_d);
+                }
             else if (Placement_a_DROITE_d == 1)
-                {*moi_d = sendMove(direction_prioritaire);}
+                {
+                //Idee de Nicola BENSIDHOUM de deleguer la gestion de la direction a une autre fonction (j ai beaucoup aime faire sous traiter la tache avec une fonction exterieur ca m a rappele la factorisation en POO)
+                int Quotient_Intellectuel = 11;
+                int direction_prioritaire = eviter_les_obstacles (direction_d, ((*Tete_Queu_Moi_d[0]).Coordonnee_Portion_Serpant.x),((*Tete_Queu_Moi_d[0]).Coordonnee_Portion_Serpant.y), arene_d, Longueur_Arene_d, Hauteur_Arene_d, Tete_Queu_Moi_d, Quotient_Intellectuel);
+                if ( direction_prioritaire == -1 ) //S il n y a aucun chemin viable autant reprendre le 1er 
+                    {
+                        direction_prioritaire = direction_d;
+                        sendComment("Cher amis joueur, ce fut un plaisir de passer du temps avec toi,dernier coup a moins d un miracle :D");
+                        printf ("\n + + + + + Cher amis joueur, ce fut un plaisir de passer du temps avec vous mais malheuresement nous allons nous quitter, ceci sera mon dernier coup a moins d un miracle :D\n");
+                    }
+                *moi_d = sendMove(direction_prioritaire);
+                maj_arene_serpant_position(arene_d, Longueur_Arene_d, Hauteur_Arene_d, direction_prioritaire, tour_d, serpent_Moi_d, Tete_Queu_Moi_d);
+                }
         if (*adversaire_d != 0 || *moi_d != 0 ) {return;}
-	    maj_arene_serpant_position(arene_d, Longueur_Arene_d, Hauteur_Arene_d, direction_prioritaire, tour_d, serpent_Moi_d, Tete_Queu_Moi_d);
-        maj_arene_serpant_position(arene_d, Longueur_Arene_d, Hauteur_Arene_d, *move_adv_d, tour_d, serpent_adv_d, Tete_Queu_adv_d);
 	    affichage_arene (arene_d, Longueur_Arene_d, Hauteur_Arene_d);
         //printArena();
 

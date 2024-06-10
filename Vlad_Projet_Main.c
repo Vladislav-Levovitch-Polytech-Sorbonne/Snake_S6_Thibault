@@ -18,7 +18,7 @@ void liberation_memoire(Cellule **arene_l, int Hauteur_Arene_l, int *Muraille_l,
 
 int main (void)
 {
-	connectToServer("localhost", 1234,"Vlad");
+	connectToServer("localhost", 3456,"Vlad");
 	printf("\nTest Main Debut fonctionnel\n");
 	while (1)
 	{	//Initialisation des variables + + + + + - - - - - + + + + + - - - - - + + + + + 
